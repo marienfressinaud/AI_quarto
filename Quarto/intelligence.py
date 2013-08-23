@@ -2,6 +2,7 @@
 
 from models import Piece
 from match import Match
+from util import maximizeProperty
 
 import random
 
@@ -47,15 +48,48 @@ class Novice(Intelligence):
 	  if such a piece is available.
 	"""
 
-	def getNonWiningPiece(self, match, pieces):
-		# TODO
-		pass
+	def getNonWiningPieces(self, match, pieces):
+		winning_props = match.getWiningProperties()
+		list = []
+		for p in pieces:
+			if not p.color in winning_props \
+			and not p.height in winning_props \
+			and not p.shape in winning_props \
+			and not p.consistency in winning_props:
+				list.append(p)
+		return list
 
 	def selectPiece(self, match):
 		unused_pieces = match.getUnusedPieces()
-		piece = self.getNonWiningPiece(match, unused_pieces)
-		if piece is None:
-			i = random.randint(0, len(unused_pieces) - 1)
-			piece = unused_pieces[i]
+		available_pieces = self.getNonWiningPieces(match, unused_pieces)
+		if len(available_pieces) < 1:
+			available_pieces = unused_pieces
 
-		return piece
+		i = random.randint(0, len(available_pieces) - 1)
+
+		return available_pieces[i]
+
+	def putOnBoard(self, match, piece):
+		better_color = maximizeProperty(match.board, piece.color)
+		better_height = maximizeProperty(match.board, piece.height)
+		better_shape = maximizeProperty(match.board, piece.shape)
+		better_consistency = maximizeProperty(match.board, piece.consistency)
+
+		val_max = max((
+			better_color["value"],
+			better_height["value"],
+			better_shape["value"],
+			better_consistency["value"]
+		))
+
+		final_pos = None
+		for best in (better_color, better_height, better_shape, better_consistency):
+			if best["value"] == val_max:
+				final_pos = best["position"]
+
+		if final_pos is None:
+			availabe_places = match.getUnusedPositions()
+			i = random.randint(0, len(availabe_places) - 1)
+			final_pos = availabe_places[i]
+
+		return final_pos

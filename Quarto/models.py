@@ -68,7 +68,6 @@ class Piece:
 		if self.shape == "round":
 			image = "(" + image + ")"
 
-		# return "%(image)4s" % { "image" : image }
 		return image
 
 
@@ -108,8 +107,10 @@ class Player:
 			print str(position["x"] + 1) + " "\
 			    + str(position["y"] + 1)
 
-			if self.match.movePiece(self.selectedPiece, position):
-				self.selectedPiece = None
+			# if self.match.movePiece(self.selectedPiece, position):
+			# 	self.selectedPiece = None
+			self.match.movePiece(self.selectedPiece, position)
+			self.selectedPiece = None
 		else:
 			# TODO : UI
 			pass

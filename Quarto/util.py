@@ -1,5 +1,38 @@
 # -*- coding: utf-8 -*-
 
+def getAvailablePlaceHV(board, index, direction):
+	for i in range(len(board[0])):
+		piece = None
+		x, y = 0, 0
+		if direction == "horizontal":
+			piece = board[index][i]
+			x, y = index, i
+		elif direction == "vertical":
+			piece = board[i][index]
+			x, y = i, index
+
+		if piece is None:
+			return {
+				"x": x,
+				"y": y,
+			}
+	return None
+
+def getAvailablePlaceDiag(board, direction):
+	for i in range(len(board)):
+		piece = None
+		if direction == "down":
+			piece = board[i][i]
+		elif direction == "up":
+			piece = board[3 - i][i]
+
+		if piece is None:
+			return {
+				"x": i,
+				"y": i,
+			}
+	return None
+
 def getDiagValues(board, direction):
 	val_color = 0
 	val_height = 0
@@ -9,7 +42,6 @@ def getDiagValues(board, direction):
 	nb_rows = len(board)
 	for i in range(nb_rows):
 		piece = None
-
 		if direction == "down":
 			piece = board[i][i]
 		elif direction == "up":
@@ -70,3 +102,53 @@ def getBoardValues(board):
 	values.append(getDiagValues(board, "up"))
 
 	return values
+
+def maximizeProperty(board, prop):
+	board_values = getBoardValues(board)
+
+	better_index = -1
+	better_pos = None
+
+	for i in xrange(len(board_values)):
+		better_v = None
+		if better_index > -1:
+			better_v = board_values[better_index]
+		v = board_values[i]
+
+		pos = None
+		if i < 4:
+			pos = getAvailablePlaceHV(board, i, "vertical")
+		elif i < 8:
+			pos = getAvailablePlaceHV(board, i - 4, "horizontal")
+		elif i < 9:
+			pos = getAvailablePlaceDiag(board, "down")
+		elif i < 10:
+			pos = getAvailablePlaceDiag(board, "up")
+
+		if pos == None:
+			pass
+		elif better_v == None \
+		or (prop == "blue" and v["color"] > better_v["color"]) \
+		or (prop == "red" and v["color"] < better_v["color"]) \
+		or (prop == "tall" and v["height"] > better_v["height"]) \
+		or (prop == "short" and v["height"] < better_v["height"]) \
+		or (prop == "square" and v["shape"] > better_v["shape"]) \
+		or (prop == "round" and v["shape"] < better_v["shape"]) \
+		or (prop == "hollow" and v["consistency"] > better_v["consistency"]) \
+		or (prop == "solid" and v["consistency"] < better_v["consistency"]):
+			better_index, better_pos = i, pos
+
+	val_prop = None
+	if prop == "blue" or prop == "red":
+		val_prop = board_values[better_index]["color"]
+	elif prop == "tall" or prop == "short":
+		val_prop = board_values[better_index]["height"]
+	elif prop == "round" or prop == "square":
+		val_prop = board_values[better_index]["shape"]
+	elif prop == "hollow" or prop == "solid":
+		val_prop = board_values[better_index]["consistency"]
+
+	return {
+		"position": better_pos,
+		"value": val_prop
+	}
