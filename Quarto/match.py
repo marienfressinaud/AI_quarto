@@ -18,17 +18,21 @@ class Match:
 
 	def initPieces(self):
 		self.pieces = []
-		for color in Piece.COLORS:
-			for height in Piece.HEIGHTS:
-				for shape in Piece.SHAPES:
-					for cons in Piece.CONSISTENCIES:
-						piece = Piece({
-							"color": color,
-							"height": height,
-							"shape": shape,
-							"consistency": cons
-						})
-						self.pieces.append(piece)
+
+		for i in range(16):
+			color = Piece.PROPERTIES[0][i / 8 % 2]
+			height = Piece.PROPERTIES[1][i / 4 % 2]
+			shape = Piece.PROPERTIES[2][i / 2 % 2]
+			consistency = Piece.PROPERTIES[3][i % 2]
+
+			piece = Piece({
+				"color": color,
+				"height": height,
+				"shape": shape,
+				"consistency": consistency
+			})
+
+			self.pieces.append(piece)
 
 	def __init__(self, configuration):
 		self.initBoard()
