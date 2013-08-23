@@ -75,3 +75,15 @@ class Match:
 				print player.name, "is a human"
 
 		print "Not implemented"
+
+	def selectPiece(self, piece):
+		print "Not implemented"
+
+	def nextPlayer(self):
+		print "Not implemented"
+
+	def putOnBoard(self, piece, destination):
+		print "Not implemented"
+
+	def endGame(self):
+		print "Not implemented"
