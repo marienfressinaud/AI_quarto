@@ -1,27 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from models import Piece
-from models import Player
+from match import Match
 
 def main():
-	properties = {
-		'color': 'blue',
-		'size': 'small',
-		'shape': 'round',
-		'consistency': 'hole'
+	'''
+	Main function permits to launch a match of Quarto
+	It permits also to modify game configuration (mainly players attributes)
+	'''
+	configuration = {
+		'name_player1': 'Patrick',
+		'name_player2': 'Robert',
+		'intelligence_player1': None,
+		'intelligence_player2': 'Random'
 	}
-	piece = Piece(properties)
-	print piece.color
-
-	player = Player("Patrick", None)
-	print player.name
-	if player.isAI:
-		print "Player has an artificial intelligence"
-	else:
-		print "Player is a human"
-
-	print "Not implemented"
+	match = Match(configuration)
+	match.run()
 
 if __name__ == "__main__":
 	main()

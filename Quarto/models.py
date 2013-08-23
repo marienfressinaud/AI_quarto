@@ -4,9 +4,9 @@ class Piece:
 	'''
 	A piece is represented by:
 	* a color (blue or red)
-	* a size (small or large)
-	* a shape (round or square)
-	* a consistency (hole or full)
+	* a height (tall or short)
+	* a shape (square or round)
+	* a consistency (hollow or solid)
 	'''
 
 	def __init__(self, properties):
@@ -14,9 +14,27 @@ class Piece:
 		Initalizes a Piece
 		'''
 		self.color = properties['color']
-		self.size = properties['size']
+		self.height = properties['height']
 		self.shape = properties['shape']
 		self.consistency = properties['consistency']
+
+	def __str__(self):
+		image = ""
+		if self.color == "blue":
+			image = "b"
+		else:
+			image = "r"
+
+		if self.height == "tall":
+			image = image.upper()
+
+		if self.consistency == "hollow":
+			image = image + "*"
+
+		if self.shape == "round":
+			image = "(" + image + ")"
+
+		return image
 
 
 class Player:
