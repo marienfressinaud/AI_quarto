@@ -7,6 +7,7 @@ class Piece:
 	* a height (tall or short)
 	* a shape (square or round)
 	* a consistency (hollow or solid)
+	* and a position (None if not on the game board)
 	'''
 
 	PROPERTIES = [
@@ -24,6 +25,8 @@ class Piece:
 		self.height = properties['height']
 		self.shape = properties['shape']
 		self.consistency = properties['consistency']
+
+		self.position = None
 
 	def __str__(self):
 		image = ""
@@ -55,11 +58,6 @@ class Player:
 		self.name = name
 		self.intelligence = intelligence
 
-		if(self.intelligence is None):
-			self.isAI = False
-		else:
-			self.isAI = True
-
 	def selectPiece():
 		print "Not yet implemented"
 		return None
@@ -67,3 +65,6 @@ class Player:
 	def putOnBoard():
 		print "Not yet implemented"
 		return None
+
+	def hasAI(self):
+		return not (self.intelligence is None)

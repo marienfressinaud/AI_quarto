@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from match import Match
+from intelligence import Random
 
 def print_menu():
 	"""
@@ -51,7 +52,7 @@ def main():
 		'name_player1': 'Qua',
 		'name_player2': 'Rto',
 		'intelligence_player1': None,
-		'intelligence_player2': None
+		'intelligence_player2': Random()
 	}
 
 	choice = None

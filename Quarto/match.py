@@ -8,8 +8,8 @@ class Match:
 	A match represents a 2-players competition
 	'''
 
-	MAX_BOARD_COLS = 4
 	MAX_BOARD_ROWS = 4
+	MAX_BOARD_COLS = 4
 
 	def initBoard(self):
 		cols = self.MAX_BOARD_COLS
@@ -52,17 +52,44 @@ class Match:
 		self.active_player = player1
 
 	def run(self):
-		for piece in self.pieces:
+		for piece in self.getUnusedPieces():
 			print piece,
 		print ""
 
+		print self.getUnusedPositions()
+
 		for player in self.players:
-			if player.isAI:
+			if player.hasAI():
 				print player.name, "has an artificial intelligence"
 			else:
 				print player.name, "is a human"
 
+
+
 		print "Not implemented"
+
+	def getUnusedPieces(self):
+		list = []
+
+		for piece in self.pieces:
+			if piece.position is None:
+				list.append(piece)
+
+		return list
+
+	def getUnusedPositions(self):
+		list = []
+
+		for i in range(self.MAX_BOARD_ROWS):
+			for j in range(self.MAX_BOARD_COLS):
+				if self.board[i][j] is None:
+					list.append({
+						"x": i,
+						"y": j
+					})
+
+		return list
+
 
 	def selectPiece(self, piece):
 		print "Not implemented"
