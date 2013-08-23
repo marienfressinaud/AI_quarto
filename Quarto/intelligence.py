@@ -27,12 +27,12 @@ class Random(Intelligence):
 
 	def selectPiece(self, match):
 		pieces = match.getUnusedPieces()
-		i = random.randint(0, len(pieces))
+		i = random.randint(0, len(pieces) - 1)
 
 		return pieces[i]
 
 	def putOnBoard(self, match, piece):
 		availabe_places = match.getUnusedPositions()
-		i = random.randint(0, len(availabe_places))
+		i = random.randint(0, len(availabe_places) - 1)
 
 		return availabe_places[i]

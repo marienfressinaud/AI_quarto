@@ -28,6 +28,30 @@ class Piece:
 
 		self.position = None
 
+	def color_int(self):
+		if self.color == "blue":
+			return 1
+		else:
+			return -1
+
+	def height_int(self):
+		if self.height == "tall":
+			return 1
+		else:
+			return -1
+
+	def shape_int(self):
+		if self.shape == "square":
+			return 1
+		else:
+			return -1
+
+	def consistency_int(self):
+		if self.consistency == "hollow":
+			return 1
+		else:
+			return -1
+
 	def __str__(self):
 		image = ""
 		if self.color == "blue":
@@ -44,6 +68,7 @@ class Piece:
 		if self.shape == "round":
 			image = "(" + image + ")"
 
+		# return "%(image)4s" % { "image" : image }
 		return image
 
 
@@ -54,17 +79,40 @@ class Player:
 	* an intelligence (AI or not)
 	'''
 
-	def __init__(self, name, intelligence):
+	def __init__(self, match, name, intelligence):
+		self.match = match
 		self.name = name
 		self.intelligence = intelligence
 
-	def selectPiece():
-		print "Not yet implemented"
-		return None
+		self.selectedPiece = None
 
-	def putOnBoard():
-		print "Not yet implemented"
-		return None
+	def hasSelectedPiece(self):
+		return not (self.selectedPiece is None)
+
+	def selectPiece(self):
+		if self.hasAI():
+			piece = self.intelligence.selectPiece(self.match)
+			print piece
+			return piece
+		else:
+			# TODO : UI
+			pass
+
+	def putOnBoard(self):
+		if self.hasAI():
+			position = self.intelligence.putOnBoard(
+				self.match,
+				self.selectedPiece
+			)
+
+			print str(position["x"] + 1) + " "\
+			    + str(position["y"] + 1)
+
+			if self.match.movePiece(self.selectedPiece, position):
+				self.selectedPiece = None
+		else:
+			# TODO : UI
+			pass
 
 	def hasAI(self):
 		return not (self.intelligence is None)

@@ -74,7 +74,7 @@ def main():
 	configuration = {
 		'name_player1': 'Qua',
 		'name_player2': 'Rto',
-		'intelligence_player1': None,
+		'intelligence_player1': Random(),
 		'intelligence_player2': Random()
 	}
 
