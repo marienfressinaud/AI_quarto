@@ -9,6 +9,11 @@ class Piece:
 	* a consistency (hollow or solid)
 	'''
 
+	COLORS = ["blue", "red"]
+	HEIGHTS = ["tall", "short"]
+	SHAPES = ["square", "round"]
+	CONSISTENCIES = ["hollow", "solid"]
+
 	def __init__(self, properties):
 		'''
 		Initalizes a Piece

@@ -11,25 +11,6 @@ class Match:
 	MAX_BOARD_COLS = 4
 	MAX_BOARD_ROWS = 4
 
-	PIECE_PROPERTIES = [
-		["blue", "short", "square", "hollow"],
-		["blue", "short", "square", "solid"],
-		["blue", "short", "round", "hollow"],
-		["blue", "short", "round", "solid"],
-		["blue", "tall", "square", "hollow"],
-		["blue", "tall", "square", "solid"],
-		["blue", "tall", "round", "hollow"],
-		["blue", "tall", "round", "solid"],
-		["red", "short", "square", "hollow"],
-		["red", "short", "square", "solid"],
-		["red", "short", "round", "hollow"],
-		["red", "short", "round", "solid"],
-		["red", "tall", "square", "hollow"],
-		["red", "tall", "square", "solid"],
-		["red", "tall", "round", "hollow"],
-		["red", "tall", "round", "solid"]
-	]
-
 	def initBoard(self):
 		cols = self.MAX_BOARD_COLS
 		rows = self.MAX_BOARD_ROWS
@@ -37,14 +18,17 @@ class Match:
 
 	def initPieces(self):
 		self.pieces = []
-		for prop in self.PIECE_PROPERTIES:
-			piece = Piece({
-				"color": prop[0],
-				"height": prop[1],
-				"shape": prop[2],
-				"consistency": prop[3]
-			})
-			self.pieces.append(piece)
+		for color in Piece.COLORS:
+			for height in Piece.HEIGHTS:
+				for shape in Piece.SHAPES:
+					for cons in Piece.CONSISTENCIES:
+						piece = Piece({
+							"color": color,
+							"height": height,
+							"shape": shape,
+							"consistency": cons
+						})
+						self.pieces.append(piece)
 
 	def __init__(self, configuration):
 		self.initBoard()
