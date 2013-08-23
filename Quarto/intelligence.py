@@ -26,13 +26,36 @@ class Random(Intelligence):
 	"""
 
 	def selectPiece(self, match):
-		pieces = match.getUnusedPieces()
-		i = random.randint(0, len(pieces) - 1)
+		available_pieces = match.getUnusedPieces()
+		i = random.randint(0, len(available_pieces) - 1)
 
-		return pieces[i]
+		return available_pieces[i]
 
 	def putOnBoard(self, match, piece):
 		availabe_places = match.getUnusedPositions()
 		i = random.randint(0, len(availabe_places) - 1)
 
 		return availabe_places[i]
+
+class Novice(Intelligence):
+	"""
+	A novice intelligence plays as follows:
+	* It always places its piece in a winning formation, if possible.
+	  Otherwise, it chooses randomly among the existing open cells.
+	* If given a choice among pieces to give the opponent, it always chooses
+	  one that cannot be used to immediately win the game,
+	  if such a piece is available.
+	"""
+
+	def getNonWiningPiece(self, match, pieces):
+		# TODO
+		pass
+
+	def selectPiece(self, match):
+		unused_pieces = match.getUnusedPieces()
+		piece = self.getNonWiningPiece(match, unused_pieces)
+		if piece is None:
+			i = random.randint(0, len(unused_pieces) - 1)
+			piece = unused_pieces[i]
+
+		return piece

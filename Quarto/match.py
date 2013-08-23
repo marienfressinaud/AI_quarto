@@ -2,6 +2,7 @@
 
 from models import Piece
 from models import Player
+from util import getBoardValues
 
 class Match:
 	'''
@@ -129,6 +130,18 @@ class Match:
 
 		return list
 
+	def getWiningPieces(self):
+		pass
+
+	def getOtherPlayer(self, player):
+		j1 = self.players[0]
+		j2 = self.players[1]
+
+		if j1 == player:
+			return j2
+		else:
+			return j1
+
 	def movePiece(self, piece, pos):
 		if self.board[pos["x"]][pos["y"]] is None:
 			self.board[pos["x"]][pos["y"]] = piece
@@ -149,19 +162,10 @@ class Match:
 		print ">",
 
 		piece = self.active_player.selectPiece()
-		self.otherPlayer(self.active_player).selectedPiece = piece
-
-	def otherPlayer(self, player):
-		j1 = self.players[0]
-		j2 = self.players[1]
-
-		if j1 == player:
-			return j2
-		else:
-			return j1
+		self.getOtherPlayer(self.active_player).selectedPiece = piece
 
 	def nextPlayer(self):
-		self.active_player = self.otherPlayer(self.active_player)
+		self.active_player = self.getOtherPlayer(self.active_player)
 
 	def putOnBoard(self):
 		print "\nChoose a position (horizontal vertical)"
@@ -171,59 +175,16 @@ class Match:
 		while self.active_player.hasSelectedPiece():
 			self.active_player.putOnBoard()
 
-
-	def processChecking(self, mode):
-		for i in range(self.MAX_BOARD_ROWS):
-			val_color = 0
-			val_height = 0
-			val_shape = 0
-			val_consistency = 0
-
-			piece = None
-
-			if mode == "diag-down" or mode == "diag-up":
-				if mode == "diag-down":
-					piece = self.board[i][i]
-				elif mode == "diag-up":
-					piece = self.board[3 - i][i]
-
-				if not(piece is None):
-					val_color += piece.color_int()
-					val_height += piece.height_int()
-					val_shape += piece.shape_int()
-					val_consistency += piece.consistency_int()
-			else:
-				for j in range(self.MAX_BOARD_COLS):
-					if mode == "vertical":
-						piece = self.board[i][j]
-					elif mode == "horizontal":
-						piece = self.board[j][i]
-
-					if not(piece is None):
-						val_color += piece.color_int()
-						val_height += piece.height_int()
-						val_shape += piece.shape_int()
-						val_consistency += piece.consistency_int()
-
-			val_color *= val_color
-			val_height *= val_height
-			val_shape *= val_shape
-			val_consistency *= val_consistency
-
-			if val_color == 16 or val_height == 16 \
-			or val_shape == 16 or val_consistency == 16:
-			# if val_color == 16:
-				return True
-
-		return False
-
-
 	def checkWinning(self):
-		if self.processChecking("vertical") \
-		or self.processChecking("horizontal") \
-		or self.processChecking("diag-down") \
-		or self.processChecking("diag-up"):
-			return "win"
+		for board_values in getBoardValues(self.board):
+			color = board_values["color"] ** 2
+			height = board_values["height"] ** 2
+			shape = board_values["shape"] ** 2
+			consistency = board_values["consistency"] ** 2
+
+			if color == 16 or height == 16 \
+			or shape == 16 or consistency == 16:
+				return "win"
 
 		if self.boardIsFull():
 			return "draw"
@@ -233,7 +194,10 @@ class Match:
 	def endGame(self):
 		res = self.checkWinning()
 
+		print
 		if res == "win":
 			print self.active_player.name, "is the winner!"
 		elif res == "draw":
 			print "No solution, no winner..."
+
+		self.printBoard()
