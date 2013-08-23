@@ -18,7 +18,7 @@ def print_menu():
 
 	return ["p", "c", "q"]
 
-def get_choice(possible_choices):
+def get_choice(possible_choices = None):
 	"""
 	Permits to get a choice between different choices as input
 	"""
@@ -27,9 +27,10 @@ def get_choice(possible_choices):
 	ok = False
 
 	while not ok:
-		choice = raw_input("> ").lower()
+		choice = raw_input("> ")
 
-		if choice in possible_choices:
+		if (possible_choices is None) or \
+		   (choice.lower() in possible_choices):
 			ok = True
 		else:
 			message = "Invalid choice, choose between "
@@ -40,7 +41,29 @@ def get_choice(possible_choices):
 	return choice
 
 def change_configuration():
-	print "Not implemented"
+	print "We will now change player configuration"
+
+	configuration = {}
+
+	for i in range(2):
+		print "[PLAYER " + str(i + 1) + "]"
+		print "What is his name?"
+		configuration["name_player" + str(i + 1)] = get_choice()
+
+		print "Is he (H)uman or (R)andom?"
+		choice = get_choice(["h", "r"]).lower()
+
+		if choice == "h":
+			intelligence = None
+		elif choice == "r":
+			intelligence = Random()
+
+		configuration["intelligence_player" + str(i + 1)] = intelligence
+
+		print
+
+	return configuration
+
 
 def main():
 	'''
