@@ -89,7 +89,7 @@ class Match:
 				else:
 					print "%(piece)4s |" \
 					    % { "piece": str(piece) },
-			print ""
+			print
 
 	def processState(self):
 		if self.state == self.STATES["WAIT_SELECTION"]:
@@ -107,8 +107,8 @@ class Match:
 			else:
 				self.state = self.STATES["WAIT_SELECTION"]
 		else:
-			# TODO raise exception
-			pass
+			# Impossible state, but don't take risks
+			self.state = self.STATES["END_GAME"]
 
 	def getUnusedPieces(self):
 		list = []
@@ -222,5 +222,7 @@ class Match:
 			print self.active_player.name, "is the winner!"
 		elif res == "draw":
 			print "No solution, no winner..."
+		else:
+			print "How is it possible?!"
 
 		self.printBoard()
