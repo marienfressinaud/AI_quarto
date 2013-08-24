@@ -88,10 +88,22 @@ class Novice(Intelligence):
 		return available_pieces[i]
 
 	def putOnBoard(self, match, piece):
-		better_color = maximizeProperty(match.board, piece.color)
-		better_height = maximizeProperty(match.board, piece.height)
-		better_shape = maximizeProperty(match.board, piece.shape)
-		better_consistency = maximizeProperty(match.board, piece.consistency)
+		better_color = maximizeProperty(
+			match.board,
+			{ "propriety": "color", "value": piece.color }
+		)
+		better_height = maximizeProperty(
+			match.board,
+			{ "propriety": "height", "value": piece.height }
+		)
+		better_shape = maximizeProperty(
+			match.board,
+			{ "propriety": "shape", "value": piece.shape }
+		)
+		better_consistency = maximizeProperty(
+			match.board,
+			{ "propriety": "consistency", "value": piece.consistency }
+		)
 
 		val_max = max((
 			better_color["value"],

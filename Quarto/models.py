@@ -28,6 +28,16 @@ class Piece:
 
 		self.position = None
 
+	def getPropriety(self, name):
+		if name == "color":
+			return self.color
+		elif name == "height":
+			return self.height
+		elif name == "shape":
+			return self.shape
+		elif name == "consistency":
+			return self.consistency
+
 	def color_int(self):
 		if self.color == "blue":
 			return 1
