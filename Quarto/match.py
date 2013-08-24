@@ -184,7 +184,6 @@ class Match:
 		for p in unused:
 			msg += str(p) + " "
 		print msg
-		print ">",
 
 		piece = self.active_player.selectPiece()
 		self.getOtherPlayer(self.active_player).selectedPiece = piece
@@ -195,7 +194,6 @@ class Match:
 	def putOnBoard(self):
 		print "\nChoose a position (horizontal vertical)"
 		self.printBoard()
-		print ">",
 
 		while self.active_player.hasSelectedPiece():
 			self.active_player.putOnBoard()

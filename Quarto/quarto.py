@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from match import Match
-from intelligence import Random, Novice
+from intelligence import Human, Random, Novice
 
 def print_menu():
 	"""
@@ -16,7 +16,7 @@ def print_menu():
 	= (Q)uit           =
 	"""
 
-	return ["p", "c", "q"]
+	return ("p", "c", "q")
 
 def get_choice(possible_choices = None):
 	"""
@@ -51,10 +51,10 @@ def change_configuration():
 		configuration["name_player" + str(i + 1)] = get_choice()
 
 		print "Is he (H)uman, (R)andom or (N)ovice?"
-		choice = get_choice(["h", "r", "n"]).lower()
+		choice = get_choice(("h", "r", "n")).lower()
 
 		if choice == "h":
-			intelligence = None
+			intelligence = Human()
 		elif choice == "r":
 			intelligence = Random()
 		elif choice == "n":
@@ -76,7 +76,7 @@ def main():
 	configuration = {
 		'name_player1': 'Qua',
 		'name_player2': 'Rto',
-		'intelligence_player1': Random(),
+		'intelligence_player1': Human(),
 		'intelligence_player2': Novice()
 	}
 

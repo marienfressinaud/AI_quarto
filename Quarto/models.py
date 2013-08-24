@@ -89,31 +89,16 @@ class Player:
 		return not (self.selectedPiece is None)
 
 	def selectPiece(self):
-		if self.hasAI():
-			piece = self.intelligence.selectPiece(self.match)
-			print piece
-			return piece
-		else:
-			# TODO : UI
-			pass
+		return self.intelligence.selectPiece(self.match)
 
 	def putOnBoard(self):
-		if self.hasAI():
-			position = self.intelligence.putOnBoard(
-				self.match,
-				self.selectedPiece
-			)
+		position = self.intelligence.putOnBoard(
+			self.match,
+			self.selectedPiece
+		)
 
-			print str(position["x"] + 1) + " "\
-			    + str(position["y"] + 1)
-
-			# if self.match.movePiece(self.selectedPiece, position):
-			# 	self.selectedPiece = None
-			self.match.movePiece(self.selectedPiece, position)
+		if self.match.movePiece(self.selectedPiece, position):
 			self.selectedPiece = None
-		else:
-			# TODO : UI
-			pass
 
 	def hasAI(self):
-		return not (self.intelligence is None)
+		return not isinstance(self.intelligence, Human)

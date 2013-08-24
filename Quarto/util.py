@@ -120,9 +120,9 @@ def maximizeProperty(board, prop):
 
 		pos = None
 		if i < 4:
-			pos = getAvailablePlaceHV(board, i, "vertical")
+			pos = getAvailablePlaceHV(board, i, "horizontal")
 		elif i < 8:
-			pos = getAvailablePlaceHV(board, i - 4, "horizontal")
+			pos = getAvailablePlaceHV(board, i - 4, "vertical")
 		elif i < 9:
 			pos = getAvailablePlaceDiag(board, "down")
 		elif i < 10:
