@@ -4,8 +4,6 @@ from models import Piece
 from models import Player
 from util import getBoardValues
 
-import sys
-
 class Match:
 	'''
 	A match represents a 2-players competition
@@ -74,20 +72,22 @@ class Match:
 		self.endGame()
 
 	def printBoard(self):
-		print " ",
+		print "  ",
 		for j in range(self.MAX_BOARD_COLS):
 			print "%3d   " % (j + 1),
 		print
+		print "-" * 30,
+		print
 
 		for i in range(self.MAX_BOARD_ROWS):
-			print (i + 1),
+			print str(i + 1) + "|",
 			for j in range(self.MAX_BOARD_COLS):
 				piece = self.board[i][j]
 				if piece is None:
 					print "%(pad)5s|" \
 					    % { "pad": "" },
 				else:
-					print "%(piece)5s|" \
+					print "%(piece)4s |" \
 					    % { "piece": str(piece) },
 			print ""
 
@@ -172,9 +172,6 @@ class Match:
 			self.board[pos["x"]][pos["y"]] = piece
 			piece.position = pos
 			return True
-		self.printBoard()
-		print pos
-		sys.exit()
 		return False
 
 	def boardIsFull(self):

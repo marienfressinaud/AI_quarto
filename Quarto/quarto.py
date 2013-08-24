@@ -50,13 +50,15 @@ def change_configuration():
 		print "What is his name?"
 		configuration["name_player" + str(i + 1)] = get_choice()
 
-		print "Is he (H)uman or (R)andom?"
-		choice = get_choice(["h", "r"]).lower()
+		print "Is he (H)uman, (R)andom or (N)ovice?"
+		choice = get_choice(["h", "r", "n"]).lower()
 
 		if choice == "h":
 			intelligence = None
 		elif choice == "r":
 			intelligence = Random()
+		elif choice == "n":
+			intelligence = Novice()
 
 		configuration["intelligence_player" + str(i + 1)] = intelligence
 

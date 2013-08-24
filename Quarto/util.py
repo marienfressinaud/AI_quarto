@@ -21,15 +21,18 @@ def getAvailablePlaceHV(board, index, direction):
 def getAvailablePlaceDiag(board, direction):
 	for i in range(len(board)):
 		piece = None
+		x, y = 0, 0
 		if direction == "down":
 			piece = board[i][i]
+			x, y = i, i
 		elif direction == "up":
 			piece = board[3 - i][i]
+			x, y = 3 - i, i
 
 		if piece is None:
 			return {
-				"x": i,
-				"y": i,
+				"x": x,
+				"y": y,
 			}
 	return None
 
