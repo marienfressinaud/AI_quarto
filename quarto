@@ -3,9 +3,11 @@
 
 import Quarto.quarto
 
-try:
-	Quarto.quarto.main()
-except:
-	pass
+# try:
+# 	Quarto.quarto.main()
+# except:
+# 	pass
+
+Quarto.quarto.main()
 
 print "\nBye bye"

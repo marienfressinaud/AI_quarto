@@ -84,9 +84,9 @@ class Match:
 			elif board_values["shape"] == 3:
 				props.add("square")
 
-			if board_values["consistency"] == -3:
+			if board_values["state"] == -3:
 				props.add("solid")
-			elif board_values["consistency"] == 3:
+			elif board_values["state"] == 3:
 				props.add("hollow")
 
 		return props
@@ -121,10 +121,10 @@ class Match:
 			color = board_values["color"] ** 2
 			height = board_values["height"] ** 2
 			shape = board_values["shape"] ** 2
-			consistency = board_values["consistency"] ** 2
+			state = board_values["state"] ** 2
 
 			if color == 16 or height == 16 \
-			or shape == 16 or consistency == 16:
+			or shape == 16 or state == 16:
 				return "win"
 
 		if self.board.isFull():

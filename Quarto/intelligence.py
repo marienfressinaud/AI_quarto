@@ -68,7 +68,7 @@ class Novice(Intelligence):
 			if not p.color in winning_props \
 			and not p.height in winning_props \
 			and not p.shape in winning_props \
-			and not p.consistency in winning_props:
+			and not p.state in winning_props:
 				list.append(p)
 		return list
 
@@ -97,20 +97,20 @@ class Novice(Intelligence):
 			match.board.board,
 			{ "propriety": "shape", "value": piece.shape }
 		)
-		better_consistency = maximizeProperty(
+		better_state = maximizeProperty(
 			match.board.board,
-			{ "propriety": "consistency", "value": piece.consistency }
+			{ "propriety": "state", "value": piece.state }
 		)
 
 		val_max = max((
 			better_color["value"],
 			better_height["value"],
 			better_shape["value"],
-			better_consistency["value"]
+			better_state["value"]
 		))
 
 		final_pos = None
-		for best in (better_color, better_height, better_shape, better_consistency):
+		for best in (better_color, better_height, better_shape, better_state):
 			if best["value"] == val_max:
 				final_pos = best["position"]
 
@@ -122,3 +122,35 @@ class Novice(Intelligence):
 		ui.showSelectedPosition(final_pos)
 
 		return final_pos
+
+class Minimax(Intelligence):
+	"""
+	A Minimax intelligence implements Minimax algorithm
+	with alpha-beta pruning. It must be the better player!
+	"""
+
+	MAX_VAL_DEPTH = 5
+
+	def __init__(self, depth):
+		if depth < 1:
+			depth = 1
+		elif depth > self.MAX_VAL_DEPTH:
+			depth = self.MAX_VAL_DEPTH
+
+		self.max_depth = depth
+
+	def selectPiece(self, match):
+		available_pieces = match.board.unusedPieces()
+		i = random.randint(0, len(available_pieces) - 1)
+
+		ui.showSelectedPiece(available_pieces[i])
+
+		return available_pieces[i]
+
+	def putOnBoard(self, match, piece):
+		available_pos = match.board.unusedPositions()
+		i = random.randint(0, len(available_pos) - 1)
+
+		ui.showSelectedPosition(available_pos[i])
+
+		return available_pos[i]

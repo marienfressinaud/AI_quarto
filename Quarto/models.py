@@ -6,7 +6,7 @@ class Piece:
 	* a color (blue or red)
 	* a height (tall or short)
 	* a shape (square or round)
-	* a consistency (hollow or solid)
+	* a state (hollow or solid)
 	* and a position (None if not on the game board)
 	'''
 
@@ -24,7 +24,7 @@ class Piece:
 		self.color = properties['color']
 		self.height = properties['height']
 		self.shape = properties['shape']
-		self.consistency = properties['consistency']
+		self.state = properties['state']
 
 		self.position = None
 
@@ -35,32 +35,25 @@ class Piece:
 			return self.height
 		elif name == "shape":
 			return self.shape
-		elif name == "consistency":
-			return self.consistency
+		elif name == "state":
+			return self.state
+
+	def __equal1(self, prop, value):
+		if prop == value:
+			return 1
+		return -1
 
 	def color_int(self):
-		if self.color == "blue":
-			return 1
-		else:
-			return -1
+		return self.__equal1(self.color, "blue")
 
 	def height_int(self):
-		if self.height == "tall":
-			return 1
-		else:
-			return -1
+		return self.__equal1(self.height, "tall")
 
 	def shape_int(self):
-		if self.shape == "square":
-			return 1
-		else:
-			return -1
+		return self.__equal1(self.shape, "square")
 
-	def consistency_int(self):
-		if self.consistency == "hollow":
-			return 1
-		else:
-			return -1
+	def state_int(self):
+		return self.__equal1(self.state, "hollow")
 
 	def __str__(self):
 		image = ""
@@ -72,7 +65,7 @@ class Piece:
 		if self.height == "tall":
 			image = image.upper()
 
-		if self.consistency == "hollow":
+		if self.state == "hollow":
 			image = image + "*"
 
 		if self.shape == "round":
@@ -96,13 +89,13 @@ class Board:
 			color = Piece.PROPERTIES[0][i / 8 % 2]
 			height = Piece.PROPERTIES[1][i / 4 % 2]
 			shape = Piece.PROPERTIES[2][i / 2 % 2]
-			consistency = Piece.PROPERTIES[3][i % 2]
+			state = Piece.PROPERTIES[3][i % 2]
 
 			piece = Piece({
 				"color": color,
 				"height": height,
 				"shape": shape,
-				"consistency": consistency
+				"state": state
 			})
 
 			self.pieces.append(piece)

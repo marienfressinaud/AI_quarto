@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from match import Match
-from intelligence import Human, Random, Novice
+from intelligence import Human, Random, Novice, Minimax
 
 import ui
 
@@ -19,6 +19,8 @@ def change_configuration():
 			intelligence = Random()
 		elif player_conf["intelligence"] == "n":
 			intelligence = Novice()
+		elif player_conf["intelligence"] == "m":
+			intelligence = Minimax(player_conf["depth"])
 
 		configuration["name_player" + str(i + 1)] = player_conf["name"]
 		configuration["intelligence_player" + str(i + 1)] = intelligence

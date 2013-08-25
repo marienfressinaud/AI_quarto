@@ -55,7 +55,7 @@ def getDiagValues(board, direction):
 	val_color = 0
 	val_height = 0
 	val_shape = 0
-	val_consistency = 0
+	val_state = 0
 
 	nb_rows = len(board)
 	for i in range(nb_rows):
@@ -69,13 +69,13 @@ def getDiagValues(board, direction):
 			val_color += piece.color_int()
 			val_height += piece.height_int()
 			val_shape += piece.shape_int()
-			val_consistency += piece.consistency_int()
+			val_state += piece.state_int()
 
 	return {
 		"color": val_color,
 		"height": val_height,
 		"shape": val_shape,
-		"consistency": val_consistency
+		"state": val_state
 	}
 
 def getHVValues(board, direction):
@@ -86,7 +86,7 @@ def getHVValues(board, direction):
 		val_color = 0
 		val_height = 0
 		val_shape = 0
-		val_consistency = 0
+		val_state = 0
 
 		for j in range(nb_cols):
 			piece = None
@@ -99,13 +99,13 @@ def getHVValues(board, direction):
 				val_color += piece.color_int()
 				val_height += piece.height_int()
 				val_shape += piece.shape_int()
-				val_consistency += piece.consistency_int()
+				val_state += piece.state_int()
 
 		yield {
 			"color": val_color,
 			"height": val_height,
 			"shape": val_shape,
-			"consistency": val_consistency
+			"state": val_state
 		}
 
 def getBoardValues(board):
