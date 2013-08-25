@@ -53,6 +53,9 @@ def askConfPlayer(num):
 def showBoard(board):
 	print str(board)
 
+def showPlayer(player):
+	print player.name,
+
 def showChoosePiece(pieces):
 	msg = "\nChoose a piece: "
 	for p in pieces:
