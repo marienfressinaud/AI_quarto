@@ -34,10 +34,10 @@ def main():
 	'''
 
 	configuration = {
-		'name_player1': 'Qua',
-		'name_player2': 'Rto',
+		'name_player1': 'Player 1',
+		'name_player2': 'Player 2',
 		'intelligence_player1': Human(),
-		'intelligence_player2': Novice()
+		'intelligence_player2': Minimax(1)
 	}
 
 	choice = None

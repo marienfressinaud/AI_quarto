@@ -117,17 +117,9 @@ class Match:
 			self.active_player.putOnBoard()
 
 	def checkWinning(self):
-		for board_values in getBoardValues(self.board.board):
-			color = board_values["color"] ** 2
-			height = board_values["height"] ** 2
-			shape = board_values["shape"] ** 2
-			state = board_values["state"] ** 2
-
-			if color == 16 or height == 16 \
-			or shape == 16 or state == 16:
-				return "win"
-
-		if self.board.isFull():
+		if self.board.isWon():
+			return "win"
+		elif self.board.isFull():
 			return "draw"
 
 		return "no_win"

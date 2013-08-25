@@ -1,42 +1,22 @@
 # -*- coding: utf-8 -*-
 
-def getAvailablePlaceHV(board, prop, index, direction):
+def getAvailablePlace(board, prop, index, direction):
 	pos = None
 	is_ok = True
 
 	for i in range(len(board)):
 		piece = None
 		x, y = 0, 0
-		if direction == "horizontal":
+		if direction == "row":
 			piece = board[index][i]
 			x, y = index, i
-		elif direction == "vertical":
+		elif direction == "col":
 			piece = board[i][index]
 			x, y = i, index
-
-		if is_ok and piece is None:
-			pos = {
-				"x": x,
-				"y": y,
-			}
-		elif not (piece is None) \
-		and piece.getPropriety(prop["propriety"]) != prop["value"]:
-			pos = None
-			is_ok = False
-
-	return pos
-
-def getAvailablePlaceDiag(board, prop, direction):
-	pos = None
-	is_ok = True
-
-	for i in range(len(board)):
-		piece = None
-		x, y = 0, 0
-		if direction == "down":
+		if direction == "diag-down":
 			piece = board[i][i]
 			x, y = i, i
-		elif direction == "up":
+		elif direction == "diag-up":
 			piece = board[3 - i][i]
 			x, y = 3 - i, i
 
@@ -49,7 +29,57 @@ def getAvailablePlaceDiag(board, prop, direction):
 		and piece.getPropriety(prop["propriety"]) != prop["value"]:
 			pos = None
 			is_ok = False
+
 	return pos
+
+def evalBoard(direction, board, pos):
+	piece = board[pos["x"]][pos["y"]]
+	prop = {
+		piece.color: -1,
+		piece.height: -1,
+		piece.shape: -1,
+		piece.state: -1
+	}
+
+	for i in range(len(board)):
+		x, y = 0, 0
+
+		if direction == "row":
+			x, y = pos["x"], i
+		elif direction == "col":
+			x, y = i, pos["y"]
+		elif direction == "diag-down":
+			x, y = i, i
+		elif direction == "diag-up":
+			x, y = i, 3 - i
+
+		cur_piece = board[x][y]
+		if not (cur_piece is None):
+			if cur_piece.getPropriety("color") == piece.color \
+			and prop[piece.color] != 0:
+				prop[piece.color] += 10
+			else:
+				prop[piece.color] = 0
+			if cur_piece.getPropriety("height") == piece.height \
+			and prop[piece.height] != 0:
+				prop[piece.height] += 10
+			else:
+				prop[piece.height] = 0
+			if cur_piece.getPropriety("shape") == piece.shape \
+			and prop[piece.shape] != 0:
+				prop[piece.shape] += 10
+			else:
+				prop[piece.shape] = 0
+			if cur_piece.getPropriety("state") == piece.state \
+			and prop[piece.state] != 0:
+				prop[piece.state] += 10
+			else:
+				prop[piece.state] = 0
+
+	return prop[piece.color] \
+	     + prop[piece.height] \
+	     + prop[piece.shape] \
+	     + prop[piece.state]
 
 def getDiagValues(board, direction):
 	val_color = 0
@@ -90,9 +120,9 @@ def getHVValues(board, direction):
 
 		for j in range(nb_cols):
 			piece = None
-			if direction == "vertical":
+			if direction == "row":
 				piece = board[i][j]
-			elif direction == "horizontal":
+			elif direction == "col":
 				piece = board[j][i]
 
 			if not(piece is None):
@@ -111,15 +141,16 @@ def getHVValues(board, direction):
 def getBoardValues(board):
 	values = []
 
-	for values_tmp in getHVValues(board, "vertical"):
+	for values_tmp in getHVValues(board, "row"):
 		values.append(values_tmp)
-	for values_tmp in getHVValues(board, "horizontal"):
+	for values_tmp in getHVValues(board, "col"):
 		values.append(values_tmp)
 
 	values.append(getDiagValues(board, "down"))
 	values.append(getDiagValues(board, "up"))
 
 	return values
+
 
 def maximizeProperty(board, prop):
 	board_values = getBoardValues(board)
@@ -138,13 +169,13 @@ def maximizeProperty(board, prop):
 
 		pos = None
 		if i < 4:
-			pos = getAvailablePlaceHV(board, prop, i, "horizontal")
+			pos = getAvailablePlace(board, prop, i, "row")
 		elif i < 8:
-			pos = getAvailablePlaceHV(board, prop, i - 4, "vertical")
+			pos = getAvailablePlace(board, prop, i - 4, "col")
 		elif i < 9:
-			pos = getAvailablePlaceDiag(board, prop, "down")
+			pos = getAvailablePlace(board, prop, None, "diag-down")
 		elif i < 10:
-			pos = getAvailablePlaceDiag(board, prop, "up")
+			pos = getAvailablePlace(board, prop, None, "diag-up")
 
 		if pos == None:
 			pass

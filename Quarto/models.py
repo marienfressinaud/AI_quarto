@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from util import getBoardValues
+
 class Piece:
 	'''
 	A piece is represented by:
@@ -129,15 +131,35 @@ class Board:
 
 		return list
 
-	def movePiece(self, piece, pos):
+	def putPiece(self, piece, pos):
 		if self.board[pos["x"]][pos["y"]] is None:
 			self.board[pos["x"]][pos["y"]] = piece
 			piece.position = pos
 			return True
 		return False
 
+	def takeOff(self, piece):
+		pos = piece.position
+
+		if not (pos is None):
+			self.board[pos["x"]][pos["y"]] = None
+			piece.position = None
+
 	def isFull(self):
 		return len(self.unusedPositions()) == 0
+
+	def isWon(self):
+		for board_values in getBoardValues(self.board):
+			color = board_values["color"] ** 2
+			height = board_values["height"] ** 2
+			shape = board_values["shape"] ** 2
+			state = board_values["state"] ** 2
+
+			if color == 16 or height == 16 \
+			or shape == 16 or state == 16:
+				return True
+
+		return False
 
 	def __str__(self):
 		image = "  "
@@ -183,7 +205,7 @@ class Player:
 			self.selectedPiece
 		)
 
-		if self.match.board.movePiece(self.selectedPiece, position):
+		if self.match.board.putPiece(self.selectedPiece, position):
 			self.selectedPiece = None
 
 	def hasAI(self):
