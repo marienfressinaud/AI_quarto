@@ -24,10 +24,10 @@ class Intelligence:
 class Human(Intelligence):
 
 	def selectPiece(self, match):
-		return ui.selectPiece(match)
+		return ui.askSelectPiece(match.getUnusedPieces())
 
 	def putOnBoard(self, match, piece):
-		return ui.putOnBoard(match)
+		return ui.askPosition(match.getUnusedPositions())
 
 class Random(Intelligence):
 	"""
@@ -39,7 +39,7 @@ class Random(Intelligence):
 		available_pieces = match.getUnusedPieces()
 		i = random.randint(0, len(available_pieces) - 1)
 
-		print "> " + str(available_pieces[i])
+		ui.showSelectedPiece(available_pieces[i])
 
 		return available_pieces[i]
 
@@ -47,12 +47,9 @@ class Random(Intelligence):
 		availabe_places = match.getUnusedPositions()
 		i = random.randint(0, len(availabe_places) - 1)
 
-		position = availabe_places[i]
+		ui.showSelectedPosition(availabe_places[i])
 
-		print "> " + str(position["x"] + 1) + " "\
-		           + str(position["y"] + 1)
-
-		return position
+		return availabe_places[i]
 
 class Novice(Intelligence):
 	"""
@@ -83,7 +80,7 @@ class Novice(Intelligence):
 
 		i = random.randint(0, len(available_pieces) - 1)
 
-		print "> " + str(available_pieces[i])
+		ui.showSelectedPiece(available_pieces[i])
 
 		return available_pieces[i]
 
@@ -122,7 +119,6 @@ class Novice(Intelligence):
 			i = random.randint(0, len(availabe_places) - 1)
 			final_pos = availabe_places[i]
 
-		print "> " + str(final_pos["x"] + 1) + " "\
-		           + str(final_pos["y"] + 1)
+		ui.showSelectedPosition(final_pos)
 
 		return final_pos

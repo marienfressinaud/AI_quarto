@@ -161,7 +161,7 @@ class Match:
 		return len(unusedPos) == 0
 
 	def selectPiece(self):
-		ui.choosePiece(self.getUnusedPieces())
+		ui.showChoosePiece(self.getUnusedPieces())
 
 		piece = self.active_player.selectPiece()
 		self.getOtherPlayer(self.active_player).selectedPiece = piece
@@ -170,7 +170,7 @@ class Match:
 		self.active_player = self.getOtherPlayer(self.active_player)
 
 	def putOnBoard(self):
-		ui.choosePosition()
+		ui.showChoosePosition()
 		ui.showBoard(self.board)
 
 		while self.active_player.hasSelectedPiece():
@@ -196,8 +196,8 @@ class Match:
 		res = self.checkWinning()
 
 		if res == "win":
-			ui.endGame(self.active_player)
+			ui.showEndGame(self.active_player)
 		elif res == "draw":
-			ui.endGame(None)
+			ui.showEndGame(None)
 
 		ui.showBoard(self.board)

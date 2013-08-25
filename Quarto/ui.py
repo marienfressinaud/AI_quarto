@@ -1,5 +1,51 @@
 # -*- coding: utf-8 -*-
 
+def showMenu():
+	"""
+	Print game menu and return valid arguments we should take in account
+	"""
+
+	print """
+	======= MENU =======
+	= (P)lay           =
+	= (C)onfiguration  =
+	= (Q)uit           =
+	"""
+
+def askChoice(possible_choices = None):
+	"""
+	Permits to get a choice between different choices as input
+	"""
+	choice = None
+	ok = False
+
+	while not ok:
+		choice = raw_input("> ")
+
+		if (possible_choices is None) or \
+		   (choice.lower() in possible_choices):
+			ok = True
+		else:
+			message = "Invalid choice, choose between "
+			for c in possible_choices:
+				message += c.upper() + " or "
+			print message[:-3]
+
+	return choice
+
+def askConfPlayer(num):
+	conf_player = {}
+	print "[PLAYER " + str(num) + "]"
+	print "What is his name?"
+	conf_player["name"] = askChoice()
+
+	print "Is he (H)uman, (R)andom or (N)ovice?"
+	conf_player["intelligence"] = askChoice(("h", "r", "n")).lower()
+
+	print
+
+	return conf_player
+
 def showBoard(board):
 	print "  ",
 	for j in range(len(board[0])):
@@ -20,17 +66,16 @@ def showBoard(board):
 				    % { "piece": str(piece) },
 		print
 
-def choosePiece(pieces):
+def showChoosePiece(pieces):
 	msg = "\nChoose a piece: "
 	for p in pieces:
 		msg += str(p) + " "
 	print msg
 
-def choosePosition():
+def showChoosePosition():
 	print "\nChoose a position (line column)"
 
-def selectPiece(match):
-	pieces = match.getUnusedPieces()
+def askSelectPiece(pieces):
 	available_pieces = [str(p) for p in pieces]
 
 	choice = None
@@ -52,9 +97,10 @@ def selectPiece(match):
 			return piece
 	return None
 
-def putOnBoard(match):
-	positions = match.getUnusedPositions()
+def showSelectedPiece(piece):
+	print "> " + str(piece)
 
+def askPosition(positions):
 	position = None
 	ok = False
 
@@ -79,7 +125,11 @@ def putOnBoard(match):
 
 	return position
 
-def endGame(winner):
+def showSelectedPosition(position):
+	print "> " + str(position["x"] + 1) + " "\
+	           + str(position["y"] + 1)
+
+def showEndGame(winner):
 	print
 
 	if winner is None:

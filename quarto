@@ -6,4 +6,6 @@ import Quarto.quarto
 try:
 	Quarto.quarto.main()
 except:
-	print "The end? Really?"
+	pass
+
+print "\nBye bye"

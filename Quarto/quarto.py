@@ -4,65 +4,24 @@
 from match import Match
 from intelligence import Human, Random, Novice
 
-def print_menu():
-	"""
-	Print game menu and return valid arguments we should take in account
-	"""
-
-	print """
-	======= MENU =======
-	= (P)lay           =
-	= (C)onfiguration  =
-	= (Q)uit           =
-	"""
-
-	return ("p", "c", "q")
-
-def get_choice(possible_choices = None):
-	"""
-	Permits to get a choice between different choices as input
-	"""
-
-	choice = None
-	ok = False
-
-	while not ok:
-		choice = raw_input("> ")
-
-		if (possible_choices is None) or \
-		   (choice.lower() in possible_choices):
-			ok = True
-		else:
-			message = "Invalid choice, choose between "
-			for c in possible_choices:
-				message += c.upper() + " or "
-			print message[:-3]
-
-	return choice
+import ui
 
 def change_configuration():
-	print "We will now change player configuration"
-
 	configuration = {}
 
 	for i in range(2):
-		print "[PLAYER " + str(i + 1) + "]"
-		print "What is his name?"
-		configuration["name_player" + str(i + 1)] = get_choice()
+		player_conf = ui.askConfPlayer(i + 1)
 
-		print "Is he (H)uman, (R)andom or (N)ovice?"
-		choice = get_choice(("h", "r", "n")).lower()
-
-		if choice == "h":
+		intelligence = None
+		if player_conf["intelligence"] == "h":
 			intelligence = Human()
-		elif choice == "r":
+		elif player_conf["intelligence"] == "r":
 			intelligence = Random()
-		elif choice == "n":
+		elif player_conf["intelligence"] == "n":
 			intelligence = Novice()
 
+		configuration["name_player" + str(i + 1)] = player_conf["name"]
 		configuration["intelligence_player" + str(i + 1)] = intelligence
-
-		print
 
 	return configuration
 
@@ -83,16 +42,14 @@ def main():
 	choice = None
 
 	while choice != "q":
-		possible_choices = print_menu()
-		choice = get_choice(possible_choices).lower()
+		ui.showMenu()
+		choice = ui.askChoice(("p", "c", "q")).lower()
 
 		if choice == "p":
 			match = Match(configuration)
 			match.run()
 		elif choice == "c":
 			configuration = change_configuration()
-
-	print "Bye bye!"
 
 if __name__ == "__main__":
 	main()
