@@ -4,6 +4,8 @@ from models import Piece
 from models import Player
 from util import getBoardValues
 
+import ui
+
 class Match:
 	'''
 	A match represents a 2-players competition
@@ -70,26 +72,6 @@ class Match:
 			self.processState()
 
 		self.endGame()
-
-	def printBoard(self):
-		print "  ",
-		for j in range(self.MAX_BOARD_COLS):
-			print "%3d   " % (j + 1),
-		print
-		print "-" * 30,
-		print
-
-		for i in range(self.MAX_BOARD_ROWS):
-			print str(i + 1) + "|",
-			for j in range(self.MAX_BOARD_COLS):
-				piece = self.board[i][j]
-				if piece is None:
-					print "%(pad)5s|" \
-					    % { "pad": "" },
-				else:
-					print "%(piece)4s |" \
-					    % { "piece": str(piece) },
-			print
 
 	def processState(self):
 		if self.state == self.STATES["WAIT_SELECTION"]:
@@ -179,11 +161,7 @@ class Match:
 		return len(unusedPos) == 0
 
 	def selectPiece(self):
-		unused =  self.getUnusedPieces()
-		msg = "\nChoose a piece: "
-		for p in unused:
-			msg += str(p) + " "
-		print msg
+		ui.choosePiece(self.getUnusedPieces())
 
 		piece = self.active_player.selectPiece()
 		self.getOtherPlayer(self.active_player).selectedPiece = piece
@@ -192,8 +170,8 @@ class Match:
 		self.active_player = self.getOtherPlayer(self.active_player)
 
 	def putOnBoard(self):
-		print "\nChoose a position (horizontal vertical)"
-		self.printBoard()
+		ui.choosePosition()
+		ui.showBoard(self.board)
 
 		while self.active_player.hasSelectedPiece():
 			self.active_player.putOnBoard()
@@ -217,12 +195,9 @@ class Match:
 	def endGame(self):
 		res = self.checkWinning()
 
-		print
 		if res == "win":
-			print self.active_player.name, "is the winner!"
+			ui.endGame(self.active_player)
 		elif res == "draw":
-			print "No solution, no winner..."
-		else:
-			print "How is it possible?!"
+			ui.endGame(None)
 
-		self.printBoard()
+		ui.showBoard(self.board)

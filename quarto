@@ -2,4 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import Quarto.quarto
-Quarto.quarto.main()
+
+try:
+	Quarto.quarto.main()
+except:
+	print "The end? Really?"
