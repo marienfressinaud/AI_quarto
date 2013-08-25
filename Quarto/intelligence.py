@@ -24,10 +24,10 @@ class Intelligence:
 class Human(Intelligence):
 
 	def selectPiece(self, match):
-		return ui.askSelectPiece(match.getUnusedPieces())
+		return ui.askSelectPiece(match.board.unusedPieces())
 
 	def putOnBoard(self, match, piece):
-		return ui.askPosition(match.getUnusedPositions())
+		return ui.askPosition(match.board.unusedPositions())
 
 class Random(Intelligence):
 	"""
@@ -36,7 +36,7 @@ class Random(Intelligence):
 	"""
 
 	def selectPiece(self, match):
-		available_pieces = match.getUnusedPieces()
+		available_pieces = match.board.unusedPieces()
 		i = random.randint(0, len(available_pieces) - 1)
 
 		ui.showSelectedPiece(available_pieces[i])
@@ -44,12 +44,12 @@ class Random(Intelligence):
 		return available_pieces[i]
 
 	def putOnBoard(self, match, piece):
-		availabe_places = match.getUnusedPositions()
-		i = random.randint(0, len(availabe_places) - 1)
+		available_pos = match.board.unusedPositions()
+		i = random.randint(0, len(available_pos) - 1)
 
-		ui.showSelectedPosition(availabe_places[i])
+		ui.showSelectedPosition(available_pos[i])
 
-		return availabe_places[i]
+		return available_pos[i]
 
 class Novice(Intelligence):
 	"""
@@ -73,7 +73,7 @@ class Novice(Intelligence):
 		return list
 
 	def selectPiece(self, match):
-		unused_pieces = match.getUnusedPieces()
+		unused_pieces = match.board.unusedPieces()
 		available_pieces = self.getNonWiningPieces(match, unused_pieces)
 		if len(available_pieces) < 1:
 			available_pieces = unused_pieces
@@ -86,19 +86,19 @@ class Novice(Intelligence):
 
 	def putOnBoard(self, match, piece):
 		better_color = maximizeProperty(
-			match.board,
+			match.board.board,
 			{ "propriety": "color", "value": piece.color }
 		)
 		better_height = maximizeProperty(
-			match.board,
+			match.board.board,
 			{ "propriety": "height", "value": piece.height }
 		)
 		better_shape = maximizeProperty(
-			match.board,
+			match.board.board,
 			{ "propriety": "shape", "value": piece.shape }
 		)
 		better_consistency = maximizeProperty(
-			match.board,
+			match.board.board,
 			{ "propriety": "consistency", "value": piece.consistency }
 		)
 
@@ -115,9 +115,9 @@ class Novice(Intelligence):
 				final_pos = best["position"]
 
 		if final_pos is None:
-			availabe_places = match.getUnusedPositions()
-			i = random.randint(0, len(availabe_places) - 1)
-			final_pos = availabe_places[i]
+			available_pos = match.board.unusedPositions()
+			i = random.randint(0, len(available_pos) - 1)
+			final_pos = available_pos[i]
 
 		ui.showSelectedPosition(final_pos)
 

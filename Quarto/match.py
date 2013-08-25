@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from models import Piece
-from models import Player
+from models import Piece, Board, Player
 from util import getBoardValues
 
 import ui
@@ -10,9 +9,6 @@ class Match:
 	'''
 	A match represents a 2-players competition
 	'''
-
-	MAX_BOARD_ROWS = 4
-	MAX_BOARD_COLS = 4
 
 	STATES = {
 		"WAIT_SELECTION": 1,
@@ -24,45 +20,22 @@ class Match:
 		"DRAW": 7
 	}
 
-	def initBoard(self):
-		cols = self.MAX_BOARD_COLS
-		rows = self.MAX_BOARD_ROWS
-		self.board = [[None for j in range(cols)] for i in range(rows)]
-
-	def initPieces(self):
-		self.pieces = []
-
-		for i in range(16):
-			color = Piece.PROPERTIES[0][i / 8 % 2]
-			height = Piece.PROPERTIES[1][i / 4 % 2]
-			shape = Piece.PROPERTIES[2][i / 2 % 2]
-			consistency = Piece.PROPERTIES[3][i % 2]
-
-			piece = Piece({
-				"color": color,
-				"height": height,
-				"shape": shape,
-				"consistency": consistency
-			})
-
-			self.pieces.append(piece)
-
 	def __init__(self, configuration):
-		self.initBoard()
-		self.initPieces()
+		self.board = Board()
 
-		name = configuration["name_player1"]
-		intelligence = configuration["intelligence_player1"]
-		player1 = Player(self, name, intelligence)
+		player1 = Player(
+			self,
+			configuration["name_player1"],
+			configuration["intelligence_player1"]
+		)
 
-		name = configuration["name_player2"]
-		intelligence = configuration["intelligence_player2"]
-		player2 = Player(self, name, intelligence)
+		player2 = Player(
+			self,
+			configuration["name_player2"],
+			configuration["intelligence_player2"]
+		)
 
-		self.players = []
-		self.players.append(player1)
-		self.players.append(player2)
-
+		self.players = (player1, player2)
 		self.active_player = player1
 
 		self.state = self.STATES["WAIT_SELECTION"]
@@ -92,32 +65,10 @@ class Match:
 			# Impossible state, but don't take risks
 			self.state = self.STATES["END_GAME"]
 
-	def getUnusedPieces(self):
-		list = []
-
-		for piece in self.pieces:
-			if piece.position is None:
-				list.append(piece)
-
-		return list
-
-	def getUnusedPositions(self):
-		list = []
-
-		for i in range(self.MAX_BOARD_ROWS):
-			for j in range(self.MAX_BOARD_COLS):
-				if self.board[i][j] is None:
-					list.append({
-						"x": i,
-						"y": j
-					})
-
-		return list
-
 	def getWiningProperties(self):
 		props = set()
 
-		for board_values in getBoardValues(self.board):
+		for board_values in getBoardValues(self.board.board):
 			if board_values["color"] == -3:
 				props.add("red")
 			elif board_values["color"] == 3:
@@ -149,19 +100,8 @@ class Match:
 		else:
 			return j1
 
-	def movePiece(self, piece, pos):
-		if self.board[pos["x"]][pos["y"]] is None:
-			self.board[pos["x"]][pos["y"]] = piece
-			piece.position = pos
-			return True
-		return False
-
-	def boardIsFull(self):
-		unusedPos = self.getUnusedPositions()
-		return len(unusedPos) == 0
-
 	def selectPiece(self):
-		ui.showChoosePiece(self.getUnusedPieces())
+		ui.showChoosePiece(self.board.unusedPieces())
 
 		piece = self.active_player.selectPiece()
 		self.getOtherPlayer(self.active_player).selectedPiece = piece
@@ -177,7 +117,7 @@ class Match:
 			self.active_player.putOnBoard()
 
 	def checkWinning(self):
-		for board_values in getBoardValues(self.board):
+		for board_values in getBoardValues(self.board.board):
 			color = board_values["color"] ** 2
 			height = board_values["height"] ** 2
 			shape = board_values["shape"] ** 2
@@ -187,7 +127,7 @@ class Match:
 			or shape == 16 or consistency == 16:
 				return "win"
 
-		if self.boardIsFull():
+		if self.board.isFull():
 			return "draw"
 
 		return "no_win"

@@ -80,6 +80,89 @@ class Piece:
 
 		return image
 
+class Board:
+	'''
+	A board is where we put pieces.
+	It will be manipulate by Minimax Intelligence so it should be no heavy
+	'''
+
+	MAX_BOARD_ROWS = 4
+	MAX_BOARD_COLS = 4
+
+	def initPieces(self):
+		self.pieces = []
+
+		for i in range(16):
+			color = Piece.PROPERTIES[0][i / 8 % 2]
+			height = Piece.PROPERTIES[1][i / 4 % 2]
+			shape = Piece.PROPERTIES[2][i / 2 % 2]
+			consistency = Piece.PROPERTIES[3][i % 2]
+
+			piece = Piece({
+				"color": color,
+				"height": height,
+				"shape": shape,
+				"consistency": consistency
+			})
+
+			self.pieces.append(piece)
+
+	def __init__(self):
+		self.initPieces()
+
+		cols = self.MAX_BOARD_COLS
+		rows = self.MAX_BOARD_ROWS
+		self.board = [[None for j in range(cols)] for i in range(rows)]
+
+	def unusedPieces(self):
+		list = []
+
+		for piece in self.pieces:
+			if piece.position is None:
+				list.append(piece)
+
+		return list
+
+	def unusedPositions(self):
+		list = []
+
+		for i in range(self.MAX_BOARD_ROWS):
+			for j in range(self.MAX_BOARD_COLS):
+				if self.board[i][j] is None:
+					list.append({
+						"x": i,
+						"y": j
+					})
+
+		return list
+
+	def movePiece(self, piece, pos):
+		if self.board[pos["x"]][pos["y"]] is None:
+			self.board[pos["x"]][pos["y"]] = piece
+			piece.position = pos
+			return True
+		return False
+
+	def isFull(self):
+		return len(self.unusedPositions()) == 0
+
+	def __str__(self):
+		image = "  "
+		for j in range(len(self.board[0])):
+			image += "%3d   " % (j + 1)
+		image += "\n" + ("-" * 30) + "\n"
+
+		for i in range(len(self.board)):
+			image += str(i + 1) + "|"
+			for j in range(len(self.board[0])):
+				piece = self.board[i][j]
+				if piece is None:
+					image += "%5s|" % ""
+				else:
+					image += "%4s |" % str(piece)
+			image += "\n"
+
+		return image
 
 class Player:
 	'''
@@ -107,7 +190,7 @@ class Player:
 			self.selectedPiece
 		)
 
-		if self.match.movePiece(self.selectedPiece, position):
+		if self.match.board.movePiece(self.selectedPiece, position):
 			self.selectedPiece = None
 
 	def hasAI(self):

@@ -47,24 +47,7 @@ def askConfPlayer(num):
 	return conf_player
 
 def showBoard(board):
-	print "  ",
-	for j in range(len(board[0])):
-		print "%3d   " % (j + 1),
-	print
-	print "-" * 30,
-	print
-
-	for i in range(len(board)):
-		print str(i + 1) + "|",
-		for j in range(len(board[0])):
-			piece = board[i][j]
-			if piece is None:
-				print "%(pad)5s|" \
-				    % { "pad": "" },
-			else:
-				print "%(piece)4s |" \
-				    % { "piece": str(piece) },
-		print
+	print str(board)
 
 def showChoosePiece(pieces):
 	msg = "\nChoose a piece: "

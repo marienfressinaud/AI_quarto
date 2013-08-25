@@ -25,7 +25,6 @@ def change_configuration():
 
 	return configuration
 
-
 def main():
 	'''
 	Main function permits to launch a match of Quarto
