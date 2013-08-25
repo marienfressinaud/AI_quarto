@@ -35,11 +35,12 @@ def getAvailablePlace(board, prop, index, direction):
 def evalBoard(direction, board, pos):
 	piece = board[pos["x"]][pos["y"]]
 	prop = {
-		piece.color: -1,
-		piece.height: -1,
-		piece.shape: -1,
-		piece.state: -1
+		piece.color: 0,
+		piece.height: 0,
+		piece.shape: 0,
+		piece.state: 0
 	}
+	eval_free_pos = 0
 
 	for i in range(len(board)):
 		x, y = 0, 0
@@ -55,31 +56,31 @@ def evalBoard(direction, board, pos):
 
 		cur_piece = board[x][y]
 		if not (cur_piece is None):
-			if cur_piece.getPropriety("color") == piece.color \
-			and prop[piece.color] != 0:
+			if cur_piece.getPropriety("color") == piece.color:
 				prop[piece.color] += 10
 			else:
-				prop[piece.color] = 0
-			if cur_piece.getPropriety("height") == piece.height \
-			and prop[piece.height] != 0:
+				prop[piece.color] -= 10
+			if cur_piece.getPropriety("height") == piece.height:
 				prop[piece.height] += 10
 			else:
-				prop[piece.height] = 0
-			if cur_piece.getPropriety("shape") == piece.shape \
-			and prop[piece.shape] != 0:
+				prop[piece.height] -= 10
+			if cur_piece.getPropriety("shape") == piece.shape:
 				prop[piece.shape] += 10
 			else:
-				prop[piece.shape] = 0
-			if cur_piece.getPropriety("state") == piece.state \
-			and prop[piece.state] != 0:
+				prop[piece.shape] -= 10
+			if cur_piece.getPropriety("state") == piece.state:
 				prop[piece.state] += 10
 			else:
-				prop[piece.state] = 0
+				prop[piece.state] -= 10
+		else:
+			eval_free_pos += 40
+
 
 	return prop[piece.color] \
 	     + prop[piece.height] \
 	     + prop[piece.shape] \
-	     + prop[piece.state]
+	     + prop[piece.state] \
+	     + eval_free_pos
 
 def getDiagValues(board, direction):
 	val_color = 0
@@ -108,7 +109,7 @@ def getDiagValues(board, direction):
 		"state": val_state
 	}
 
-def getHVValues(board, direction):
+def getRCvalues(board, direction):
 	nb_rows = len(board)
 	nb_cols = len(board[0])
 
@@ -141,9 +142,9 @@ def getHVValues(board, direction):
 def getBoardValues(board):
 	values = []
 
-	for values_tmp in getHVValues(board, "row"):
+	for values_tmp in getRCvalues(board, "row"):
 		values.append(values_tmp)
-	for values_tmp in getHVValues(board, "col"):
+	for values_tmp in getRCvalues(board, "col"):
 		values.append(values_tmp)
 
 	values.append(getDiagValues(board, "down"))

@@ -150,8 +150,8 @@ class Minimax(Intelligence):
 	STATE_MAX = 1
 	STATE_MIN = 2
 
-	EVAL_WIN = 100
-	EVAL_DRAW = 90
+	EVAL_WIN = 1000
+	EVAL_DRAW = 999
 
 	def __init__(self, depth):
 		if depth < 1:
@@ -162,14 +162,7 @@ class Minimax(Intelligence):
 		self.max_depth = depth
 
 	def evaluation(self, board, played_pos):
-		eval = 0
-
-		if board.isWon():
-			eval = self.EVAL_WIN
-		elif board.isFull():
-			eval = self.EVAL_DRAW
-
-		eval += evalBoard("row", board.board, played_pos)
+		eval = evalBoard("row", board.board, played_pos)
 		eval += evalBoard("col", board.board, played_pos)
 
 		if played_pos["x"] == played_pos["y"]:
@@ -191,32 +184,47 @@ class Minimax(Intelligence):
 		available_pos = board.unusedPositions()
 		eval = 0
 
-		if board.isFull() or depth >= self.max_depth:
+		if board.isWon():
+			eval = self.EVAL_WIN
+		if board.isFull():
+			eval = self.EVAL_DRAW
+		if depth >= self.max_depth:
 			eval = self.evaluation(board, played_pos)
 		elif state == self.STATE_MAX:
+			eval = 0
 			for piece in available_pieces:
 				for pos in available_pos:
-					eval = self.alphaBeta(
-						board, piece, pos,
-						self.STATE_MIN,
-						alpha, beta, depth + 1
+					eval = max(eval,
+						self.alphaBeta(
+							board, piece, pos,
+							self.STATE_MIN,
+							alpha, beta, depth + 1
+						)
 					)
+
+					if eval >= beta:
+						board.takeOff(played_piece)
+						return eval
 
 					alpha = max(eval, alpha)
 			eval = alpha
 		elif state == self.STATE_MIN:
+			eval = self.EVAL_WIN
 			for piece in available_pieces:
 				for pos in available_pos:
-					eval = self.alphaBeta(
-						board, piece, pos,
-						self.STATE_MAX,
-						alpha, beta, depth + 1
+					eval = min(eval,
+						self.alphaBeta(
+							board, piece, pos,
+							self.STATE_MAX,
+							alpha, beta, depth + 1
+						)
 					)
 
-					beta = min(eval, beta)
-					if alpha >= beta:
+					if alpha >= eval:
 						board.takeOff(played_piece)
-						return beta
+						return eval
+
+					beta = min(eval, beta)
 			eval = beta
 
 		board.takeOff(played_piece)
@@ -257,9 +265,10 @@ class Minimax(Intelligence):
 		return chosen_piece
 
 	def putOnBoard(self, match, piece):
-		better_pos = None
-		alpha, beta = 0, self.EVAL_WIN
 		available_pos = match.board.unusedPositions()
+		fallback_i = random.randint(0, len(available_pos) - 1)
+		better_pos = available_pos[fallback_i]
+		alpha, beta = 0, self.EVAL_WIN
 
 		if len(available_pos) >= self.STILL_NOVICE_UNTIL:
 			return Novice().putOnBoard(match, piece)
