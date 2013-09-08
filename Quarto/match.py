@@ -14,10 +14,7 @@ class Match:
 		"WAIT_SELECTION": 1,
 		"WAIT_POSITIONING": 2,
 		"CHECK_END_MATCH": 3,
-		"END_GAME": 4,
-		"J1_WIN": 5,
-		"J2_WIN": 6,
-		"DRAW": 7
+		"END_GAME": 4
 	}
 
 	def __init__(self, configuration):
@@ -64,32 +61,6 @@ class Match:
 		else:
 			# Impossible state, but don't take risks
 			self.state = self.STATES["END_GAME"]
-
-	def getWiningProperties(self):
-		props = set()
-
-		for board_values in getBoardValues(self.board.board):
-			if board_values["color"] == -3:
-				props.add("red")
-			elif board_values["color"] == 3:
-				props.add("blue")
-
-			if board_values["height"] == -3:
-				props.add("short")
-			elif board_values["height"] == 3:
-				props.add("tall")
-
-			if board_values["shape"] == -3:
-				props.add("round")
-			elif board_values["shape"] == 3:
-				props.add("square")
-
-			if board_values["state"] == -3:
-				props.add("solid")
-			elif board_values["state"] == 3:
-				props.add("hollow")
-
-		return props
 
 	def getOtherPlayer(self, player):
 		j1 = self.players[0]

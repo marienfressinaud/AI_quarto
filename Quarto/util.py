@@ -25,14 +25,14 @@ def getAvailablePlace(board, prop, index, direction):
 				"x": x,
 				"y": y,
 			}
-		elif not (piece is None) \
-		and piece.getPropriety(prop["propriety"]) != prop["value"]:
+		elif piece is not None and \
+				piece.getPropriety(prop["propriety"]) != prop["value"]:
 			pos = None
 			is_ok = False
 
 	return pos
 
-def evalBoard(direction, board, pos):
+def eval_position(direction, board, pos):
 	piece = board[pos["x"]][pos["y"]]
 	prop = {
 		piece.color: 0,
@@ -40,7 +40,8 @@ def evalBoard(direction, board, pos):
 		piece.shape: 0,
 		piece.state: 0
 	}
-	eval_free_pos = 0
+	nb_pieces = 0
+	eval_pos = 0
 
 	for i in range(len(board)):
 		x, y = 0, 0
@@ -56,31 +57,29 @@ def evalBoard(direction, board, pos):
 
 		cur_piece = board[x][y]
 		if not (cur_piece is None):
-			if cur_piece.getPropriety("color") == piece.color:
-				prop[piece.color] += 10
-			else:
-				prop[piece.color] -= 10
-			if cur_piece.getPropriety("height") == piece.height:
-				prop[piece.height] += 10
-			else:
-				prop[piece.height] -= 10
-			if cur_piece.getPropriety("shape") == piece.shape:
-				prop[piece.shape] += 10
-			else:
-				prop[piece.shape] -= 10
-			if cur_piece.getPropriety("state") == piece.state:
-				prop[piece.state] += 10
-			else:
-				prop[piece.state] -= 10
-		else:
-			eval_free_pos += 40
+				prop[piece.color] += cur_piece.color_int()
+				prop[piece.height] += cur_piece.height_int()
+				prop[piece.shape] += cur_piece.shape_int()
+				prop[piece.state] += cur_piece.state_int()
+				nb_pieces += 1
 
+	prop[piece.color] *= prop[piece.color]
+	prop[piece.height] *= prop[piece.height]
+	prop[piece.shape] *= prop[piece.shape]
+	prop[piece.state] *= prop[piece.state]
 
-	return prop[piece.color] \
-	     + prop[piece.height] \
-	     + prop[piece.shape] \
-	     + prop[piece.state] \
-	     + eval_free_pos
+	nb_pieces *= nb_pieces
+
+	if prop[piece.color] == nb_pieces:
+		eval_pos += 1
+	if prop[piece.height] == nb_pieces:
+		eval_pos += 1
+	if prop[piece.shape] == nb_pieces:
+		eval_pos += 1
+	if prop[piece.state] == nb_pieces:
+		eval_pos += 1
+
+	return eval_pos
 
 def getDiagValues(board, direction):
 	val_color = 0
@@ -96,7 +95,7 @@ def getDiagValues(board, direction):
 		elif direction == "up":
 			piece = board[3 - i][i]
 
-		if not(piece is None):
+		if piece is not None:
 			val_color += piece.color_int()
 			val_height += piece.height_int()
 			val_shape += piece.shape_int()
@@ -126,7 +125,7 @@ def getRCvalues(board, direction):
 			elif direction == "col":
 				piece = board[j][i]
 
-			if not(piece is None):
+			if piece is not None:
 				val_color += piece.color_int()
 				val_height += piece.height_int()
 				val_shape += piece.shape_int()
@@ -142,11 +141,8 @@ def getRCvalues(board, direction):
 def getBoardValues(board):
 	values = []
 
-	for values_tmp in getRCvalues(board, "row"):
-		values.append(values_tmp)
-	for values_tmp in getRCvalues(board, "col"):
-		values.append(values_tmp)
-
+	values.extend(getRCvalues(board, "row"))
+	values.extend(getRCvalues(board, "col"))
 	values.append(getDiagValues(board, "down"))
 	values.append(getDiagValues(board, "up"))
 
@@ -181,13 +177,7 @@ def maximizeProperty(board, prop):
 		if pos == None:
 			pass
 		elif better_v == None \
-		or (v[prop_name] > better_v[prop_name] \
-			and (prop_val == "blue" or prop_val == "tall" \
-			or prop_val == "square" or prop_val == "hollow") \
-		) or (v[prop_name] < better_v[prop_name] \
-			and (prop_val == "red" or prop_val == "short" \
-			or prop_val == "round" or prop_val == "solid") \
-		):
+		or (v[prop_name] ** 2 > better_v[prop_name] ** 2):
 			better_index, better_pos = i, pos
 
 	val_prop = board_values[better_index][prop_name]
@@ -196,3 +186,29 @@ def maximizeProperty(board, prop):
 		"position": better_pos,
 		"value": val_prop
 	}
+
+def getWiningProperties(board):
+	props = set()
+
+	for board_values in getBoardValues(board):
+		if board_values["color"] == -3:
+			props.add("red")
+		elif board_values["color"] == 3:
+			props.add("blue")
+
+		if board_values["height"] == -3:
+			props.add("short")
+		elif board_values["height"] == 3:
+			props.add("tall")
+
+		if board_values["shape"] == -3:
+			props.add("round")
+		elif board_values["shape"] == 3:
+			props.add("square")
+
+		if board_values["state"] == -3:
+			props.add("solid")
+		elif board_values["state"] == 3:
+			props.add("hollow")
+
+	return props

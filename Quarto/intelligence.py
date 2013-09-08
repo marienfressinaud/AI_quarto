@@ -2,7 +2,7 @@
 
 from models import Piece
 from match import Match
-from util import maximizeProperty, evalBoard
+from util import maximizeProperty, eval_position, getWiningProperties
 import ui
 
 import random
@@ -66,7 +66,7 @@ class Novice(Intelligence):
 	"""
 
 	def getNonWiningPieces(self, match, pieces):
-		winning_props = match.getWiningProperties()
+		winning_props = getWiningProperties(match.board.board)
 		list = []
 		for p in pieces:
 			if not p.color in winning_props \
@@ -143,41 +143,41 @@ class Minimax(Intelligence):
 	with alpha-beta pruning. It must be the better player!
 	"""
 
-	STILL_NOVICE_UNTIL = 12
+	STILL_NOVICE_UNTIL = 13
 
 	MAX_VAL_DEPTH = 5
 
 	STATE_MAX = 1
 	STATE_MIN = 2
 
-	EVAL_WIN = 1000
-	EVAL_DRAW = 999
+	EVAL_WIN = 200
+	EVAL_DRAW = 199
 
 	def __init__(self, depth):
 		if depth < 1:
 			depth = 1
-		elif depth > self.MAX_VAL_DEPTH:
-			depth = self.MAX_VAL_DEPTH
+		elif depth > Minimax.MAX_VAL_DEPTH:
+			depth = Minimax.MAX_VAL_DEPTH
 
 		self.max_depth = depth
 
 	def evaluation(self, board, played_pos):
-		eval = evalBoard("row", board.board, played_pos)
-		eval += evalBoard("col", board.board, played_pos)
+		eval_pos = eval_position("row", board.board, played_pos)
+		eval_pos += eval_position("col", board.board, played_pos)
 
 		if played_pos["x"] == played_pos["y"]:
-			eval += evalBoard(
+			eval_pos += eval_position(
 				"diag-down", board.board, played_pos
 			)
 		elif played_pos["x"] == 3 - played_pos["y"]:
-			eval += evalBoard(
+			eval_pos += eval_position(
 				"diag-up", board.board, played_pos
 			)
 
-		return eval
+		return 50 + eval_pos * 0.5
 
 	def alphaBeta(self, board, played_piece, played_pos,
-	                    state, alpha, beta, depth):
+	              state, alpha, beta, depth):
 		board.putPiece(played_piece, played_pos)
 
 		available_pieces = board.unusedPieces()
@@ -185,20 +185,19 @@ class Minimax(Intelligence):
 		eval = 0
 
 		if board.isWon():
-			eval = self.EVAL_WIN
-		if board.isFull():
-			eval = self.EVAL_DRAW
-		if depth >= self.max_depth:
+			eval = Minimax.EVAL_WIN
+		elif board.isFull():
+			eval = Minimax.EVAL_DRAW
+		elif depth >= self.max_depth:
 			eval = self.evaluation(board, played_pos)
-		elif state == self.STATE_MAX:
+		elif state == Minimax.STATE_MAX:
 			eval = 0
 			for piece in available_pieces:
 				for pos in available_pos:
 					eval = max(eval,
 						self.alphaBeta(
 							board, piece, pos,
-							self.STATE_MIN,
-							alpha, beta, depth + 1
+							Minimax.STATE_MIN, alpha, beta, depth + 1
 						)
 					)
 
@@ -206,17 +205,16 @@ class Minimax(Intelligence):
 						board.takeOff(played_piece)
 						return eval
 
-					alpha = max(eval, alpha)
+					alpha = max(alpha, eval)
 			eval = alpha
-		elif state == self.STATE_MIN:
-			eval = self.EVAL_WIN
+		elif state == Minimax.STATE_MIN:
+			eval = Minimax.EVAL_WIN
 			for piece in available_pieces:
 				for pos in available_pos:
 					eval = min(eval,
 						self.alphaBeta(
 							board, piece, pos,
-							self.STATE_MAX,
-							alpha, beta, depth + 1
+							Minimax.STATE_MAX, alpha, beta, depth + 1
 						)
 					)
 
@@ -224,10 +222,14 @@ class Minimax(Intelligence):
 						board.takeOff(played_piece)
 						return eval
 
-					beta = min(eval, beta)
+					beta = min(beta, eval)
 			eval = beta
 
 		board.takeOff(played_piece)
+
+		if state == Minimax.STATE_MAX:
+			eval = Minimax.EVAL_WIN - eval
+
 		return eval
 
 	def selectPiece(self, match):
@@ -235,9 +237,9 @@ class Minimax(Intelligence):
 		available_pos = match.board.unusedPositions()
 		fallback_i = random.randint(0, len(available_pieces) - 1)
 		chosen_piece = available_pieces[fallback_i]
-		alpha, beta = 0, self.EVAL_WIN
+		alpha, beta = 0, Minimax.EVAL_WIN
 
-		if len(available_pieces) >= self.STILL_NOVICE_UNTIL:
+		if len(available_pieces) >= Minimax.STILL_NOVICE_UNTIL:
 			return Novice().selectPiece(match)
 
 		solution = False
@@ -247,17 +249,15 @@ class Minimax(Intelligence):
 			for pos in available_pos:
 				eval = self.alphaBeta(
 					match.board, piece, pos,
-					self.STATE_MIN, alpha, beta, 1
+					Minimax.STATE_MIN, alpha, beta, 1
 				)
+
 				alpha = max(alpha, eval)
 
 			if alpha < beta:
 				beta = alpha
 				chosen_piece = piece
 				solution = True
-
-		# if not solution:
-		# 	import pdb; pdb.set_trace()
 
 		ui.showPlayer(match.active_player)
 		ui.showSelectedPiece(chosen_piece)
@@ -268,15 +268,15 @@ class Minimax(Intelligence):
 		available_pos = match.board.unusedPositions()
 		fallback_i = random.randint(0, len(available_pos) - 1)
 		better_pos = available_pos[fallback_i]
-		alpha, beta = 0, self.EVAL_WIN
+		alpha, beta = 0, Minimax.EVAL_WIN
 
-		if len(available_pos) >= self.STILL_NOVICE_UNTIL:
+		if len(available_pos) >= Minimax.STILL_NOVICE_UNTIL:
 			return Novice().putOnBoard(match, piece)
 
 		for pos in available_pos:
 			eval = self.alphaBeta(
 				match.board, piece, pos,
-				self.STATE_MAX, alpha, beta, 1
+				Minimax.STATE_MIN, alpha, beta, 1
 			)
 
 			if eval > alpha:

@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import Quarto.quarto
+import sys
 
-# try:
-# 	Quarto.quarto.main()
-# except:
-# 	pass
-
-Quarto.quarto.main()
+if len(sys.argv) > 1 and sys.argv[1] == "--test":
+	import Quarto.test
+	Quarto.test.main()
+else:
+	import Quarto.quarto
+	Quarto.quarto.main()
 
 print "\nBye bye"
