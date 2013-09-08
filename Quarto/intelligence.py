@@ -174,7 +174,7 @@ class Minimax(Intelligence):
 				"diag-up", board.board, played_pos
 			)
 
-		return 50 + eval_pos * 0.5
+		return min(Minimax.EVAL_WIN, 50 + eval_pos * 0.5)
 
 	def alphaBeta(self, board, played_piece, played_pos,
 	              state, alpha, beta, depth):

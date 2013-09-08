@@ -43,6 +43,15 @@ def eval_position(direction, board, pos):
 	nb_pieces = 0
 	eval_pos = 0
 
+	winning_props = getWiningProperties(board)
+	if ("red" in winning_props and "blue" in winning_props) or \
+			("short" in winning_props and "tall" in winning_props) or \
+			("round" in winning_props and "square" in winning_props) or \
+			("solid" in winning_props and "hollow" in winning_props):
+		# two different winning values for a same property,
+		# it's like this board has been already won, but not sure
+		return 50
+
 	for i in range(len(board)):
 		x, y = 0, 0
 
@@ -56,7 +65,7 @@ def eval_position(direction, board, pos):
 			x, y = i, 3 - i
 
 		cur_piece = board[x][y]
-		if not (cur_piece is None):
+		if cur_piece is not None:
 				prop[piece.color] += cur_piece.color_int()
 				prop[piece.height] += cur_piece.height_int()
 				prop[piece.shape] += cur_piece.shape_int()
