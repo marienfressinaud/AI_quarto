@@ -182,7 +182,7 @@ def eval_position(direction, board, pos):
 			("solid" in winning_props and "hollow" in winning_props):
 		# two different winning values for a same property,
 		# it's like this board has been already won, but not sure
-		return 50
+		return 0
 
 	for i in xrange(len(board)):
 		x, y = 0, 0

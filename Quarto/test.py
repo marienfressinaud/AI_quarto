@@ -33,12 +33,12 @@ def main():
 	match.board.putPiece(pieces[13], pos)
 	pos = {"x": 1, "y": 3}
 	match.board.putPiece(pieces[7], pos)
-	# pos = {"x": 2, "y": 0}
-	# match.board.putPiece(pieces[5], pos)
 	pos = {"x": 2, "y": 2}
 	match.board.putPiece(pieces[2], pos)
 	pos = {"x": 3, "y": 2}
 	match.board.putPiece(pieces[0], pos)
+	pos = {"x": 1, "y": 2}
+	match.board.putPiece(pieces[15], pos)
 
 	ui.showBoard(match.board)
 	ui.showChoosePiece(match.board.unusedPieces())

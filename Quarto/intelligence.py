@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import random
+
 from models import Piece
 from match import Match
 from util import maximize_property, eval_position, get_wining_properties
 import ui
-
-import random
 
 class Intelligence:
 	"""

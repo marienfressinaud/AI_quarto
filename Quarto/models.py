@@ -75,6 +75,30 @@ class Piece:
 
 		return image
 
+	def str_server_style(self):
+		image = ""
+		if self.color == "blue":
+			image = "B"
+		else:
+			image = "R"
+
+		if self.height == "tall":
+			image += "L"
+		else:
+			image += "S"
+
+		if self.shape == "round":
+			image += "C"
+		else:
+			image += "S"
+
+		if self.state == "hollow":
+			image += "H"
+		else:
+			image += "N"
+
+		return image
+
 class Board:
 	'''
 	A board is where we put pieces.
@@ -130,6 +154,13 @@ class Board:
 					})
 
 		return list
+
+	def getPiece(self, image_piece):
+		for piece in self.unusedPieces():
+			if image_piece == str(piece):
+				return piece
+
+		return None
 
 	def putPiece(self, piece, pos):
 		if self.board[pos["x"]][pos["y"]] is None:
