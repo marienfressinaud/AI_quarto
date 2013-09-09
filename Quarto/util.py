@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-def getAvailablePlace(board, prop, index, direction):
+def __get_available_place(board, prop, index, direction):
 	pos = None
 	is_ok = True
 
-	for i in range(len(board)):
+	for i in xrange(len(board)):
 		piece = None
 		x, y = 0, 0
 		if direction == "row":
@@ -32,6 +32,138 @@ def getAvailablePlace(board, prop, index, direction):
 
 	return pos
 
+def __get_diag_values(board, direction):
+	val_color = 0
+	val_height = 0
+	val_shape = 0
+	val_state = 0
+
+	nb_rows = len(board)
+	for i in xrange(nb_rows):
+		piece = None
+		if direction == "down":
+			piece = board[i][i]
+		elif direction == "up":
+			piece = board[3 - i][i]
+
+		if piece is not None:
+			val_color += piece.color_int()
+			val_height += piece.height_int()
+			val_shape += piece.shape_int()
+			val_state += piece.state_int()
+
+	return {
+		"color": val_color,
+		"height": val_height,
+		"shape": val_shape,
+		"state": val_state
+	}
+
+def __get_RC_values(board, direction):
+	nb_rows = len(board)
+	nb_cols = len(board[0])
+
+	for i in xrange(nb_rows):
+		val_color = 0
+		val_height = 0
+		val_shape = 0
+		val_state = 0
+
+		for j in xrange(nb_cols):
+			piece = None
+			if direction == "row":
+				piece = board[i][j]
+			elif direction == "col":
+				piece = board[j][i]
+
+			if piece is not None:
+				val_color += piece.color_int()
+				val_height += piece.height_int()
+				val_shape += piece.shape_int()
+				val_state += piece.state_int()
+
+		yield {
+			"color": val_color,
+			"height": val_height,
+			"shape": val_shape,
+			"state": val_state
+		}
+
+def get_board_values(board):
+	values = []
+
+	values.extend(__get_RC_values(board, "row"))
+	values.extend(__get_RC_values(board, "col"))
+	values.append(__get_diag_values(board, "down"))
+	values.append(__get_diag_values(board, "up"))
+
+	return values
+
+
+def maximize_property(board, prop):
+	board_values = get_board_values(board)
+
+	prop_name = prop["propriety"]
+	prop_val = prop["value"]
+
+	better_index = -1
+	better_pos = None
+
+	for i in xrange(len(board_values)):
+		better_v = None
+		if better_index > -1:
+			better_v = board_values[better_index]
+		v = board_values[i]
+
+		pos = None
+		if i < 4:
+			pos = __get_available_place(board, prop, i, "row")
+		elif i < 8:
+			pos = __get_available_place(board, prop, i - 4, "col")
+		elif i < 9:
+			pos = __get_available_place(board, prop, None, "diag-down")
+		elif i < 10:
+			pos = __get_available_place(board, prop, None, "diag-up")
+
+		if pos == None:
+			pass
+		elif better_v == None \
+		or (v[prop_name] ** 2 > better_v[prop_name] ** 2):
+			better_index, better_pos = i, pos
+
+	val_prop = board_values[better_index][prop_name]
+
+	return {
+		"position": better_pos,
+		"value": val_prop
+	}
+
+def get_wining_properties(board):
+	props = set()
+
+	for board_values in get_board_values(board):
+		if board_values["color"] == -3:
+			props.add("red")
+		elif board_values["color"] == 3:
+			props.add("blue")
+
+		if board_values["height"] == -3:
+			props.add("short")
+		elif board_values["height"] == 3:
+			props.add("tall")
+
+		if board_values["shape"] == -3:
+			props.add("round")
+		elif board_values["shape"] == 3:
+			props.add("square")
+
+		if board_values["state"] == -3:
+			props.add("solid")
+		elif board_values["state"] == 3:
+			props.add("hollow")
+
+	return props
+
 def eval_position(direction, board, pos):
 	piece = board[pos["x"]][pos["y"]]
 	prop = {
@@ -43,7 +175,7 @@ def eval_position(direction, board, pos):
 	nb_pieces = 0
 	eval_pos = 0
 
-	winning_props = getWiningProperties(board)
+	winning_props = get_wining_properties(board)
 	if ("red" in winning_props and "blue" in winning_props) or \
 			("short" in winning_props and "tall" in winning_props) or \
 			("round" in winning_props and "square" in winning_props) or \
@@ -52,7 +184,7 @@ def eval_position(direction, board, pos):
 		# it's like this board has been already won, but not sure
 		return 50
 
-	for i in range(len(board)):
+	for i in xrange(len(board)):
 		x, y = 0, 0
 
 		if direction == "row":
@@ -89,135 +221,3 @@ def eval_position(direction, board, pos):
 		eval_pos += 1
 
 	return eval_pos
-
-def getDiagValues(board, direction):
-	val_color = 0
-	val_height = 0
-	val_shape = 0
-	val_state = 0
-
-	nb_rows = len(board)
-	for i in range(nb_rows):
-		piece = None
-		if direction == "down":
-			piece = board[i][i]
-		elif direction == "up":
-			piece = board[3 - i][i]
-
-		if piece is not None:
-			val_color += piece.color_int()
-			val_height += piece.height_int()
-			val_shape += piece.shape_int()
-			val_state += piece.state_int()
-
-	return {
-		"color": val_color,
-		"height": val_height,
-		"shape": val_shape,
-		"state": val_state
-	}
-
-def getRCvalues(board, direction):
-	nb_rows = len(board)
-	nb_cols = len(board[0])
-
-	for i in range(nb_rows):
-		val_color = 0
-		val_height = 0
-		val_shape = 0
-		val_state = 0
-
-		for j in range(nb_cols):
-			piece = None
-			if direction == "row":
-				piece = board[i][j]
-			elif direction == "col":
-				piece = board[j][i]
-
-			if piece is not None:
-				val_color += piece.color_int()
-				val_height += piece.height_int()
-				val_shape += piece.shape_int()
-				val_state += piece.state_int()
-
-		yield {
-			"color": val_color,
-			"height": val_height,
-			"shape": val_shape,
-			"state": val_state
-		}
-
-def getBoardValues(board):
-	values = []
-
-	values.extend(getRCvalues(board, "row"))
-	values.extend(getRCvalues(board, "col"))
-	values.append(getDiagValues(board, "down"))
-	values.append(getDiagValues(board, "up"))
-
-	return values
-
-
-def maximizeProperty(board, prop):
-	board_values = getBoardValues(board)
-
-	prop_name = prop["propriety"]
-	prop_val = prop["value"]
-
-	better_index = -1
-	better_pos = None
-
-	for i in xrange(len(board_values)):
-		better_v = None
-		if better_index > -1:
-			better_v = board_values[better_index]
-		v = board_values[i]
-
-		pos = None
-		if i < 4:
-			pos = getAvailablePlace(board, prop, i, "row")
-		elif i < 8:
-			pos = getAvailablePlace(board, prop, i - 4, "col")
-		elif i < 9:
-			pos = getAvailablePlace(board, prop, None, "diag-down")
-		elif i < 10:
-			pos = getAvailablePlace(board, prop, None, "diag-up")
-
-		if pos == None:
-			pass
-		elif better_v == None \
-		or (v[prop_name] ** 2 > better_v[prop_name] ** 2):
-			better_index, better_pos = i, pos
-
-	val_prop = board_values[better_index][prop_name]
-
-	return {
-		"position": better_pos,
-		"value": val_prop
-	}
-
-def getWiningProperties(board):
-	props = set()
-
-	for board_values in getBoardValues(board):
-		if board_values["color"] == -3:
-			props.add("red")
-		elif board_values["color"] == 3:
-			props.add("blue")
-
-		if board_values["height"] == -3:
-			props.add("short")
-		elif board_values["height"] == 3:
-			props.add("tall")
-
-		if board_values["shape"] == -3:
-			props.add("round")
-		elif board_values["shape"] == 3:
-			props.add("square")
-
-		if board_values["state"] == -3:
-			props.add("solid")
-		elif board_values["state"] == 3:
-			props.add("hollow")
-
-	return props

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from models import Piece, Board, Player
-from util import getBoardValues
 
 import ui
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from util import getBoardValues
+from util import get_board_values
 
 class Piece:
 	'''
@@ -87,7 +87,7 @@ class Board:
 	def initPieces(self):
 		self.pieces = []
 
-		for i in range(16):
+		for i in xrange(16):
 			color = Piece.PROPERTIES[0][i / 8 % 2]
 			height = Piece.PROPERTIES[1][i / 4 % 2]
 			shape = Piece.PROPERTIES[2][i / 2 % 2]
@@ -107,7 +107,7 @@ class Board:
 
 		cols = self.MAX_BOARD_COLS
 		rows = self.MAX_BOARD_ROWS
-		self.board = [[None for j in range(cols)] for i in range(rows)]
+		self.board = [[None for j in xrange(cols)] for i in xrange(rows)]
 
 	def unusedPieces(self):
 		list = []
@@ -121,8 +121,8 @@ class Board:
 	def unusedPositions(self):
 		list = []
 
-		for i in range(self.MAX_BOARD_ROWS):
-			for j in range(self.MAX_BOARD_COLS):
+		for i in xrange(self.MAX_BOARD_ROWS):
+			for j in xrange(self.MAX_BOARD_COLS):
 				if self.board[i][j] is None:
 					list.append({
 						"x": i,
@@ -149,7 +149,7 @@ class Board:
 		return len(self.unusedPositions()) == 0
 
 	def isWon(self):
-		for board_values in getBoardValues(self.board):
+		for board_values in get_board_values(self.board):
 			color = board_values["color"] ** 2
 			height = board_values["height"] ** 2
 			shape = board_values["shape"] ** 2
@@ -163,13 +163,13 @@ class Board:
 
 	def __str__(self):
 		image = "  "
-		for j in range(len(self.board[0])):
+		for j in xrange(len(self.board[0])):
 			image += "%3d   " % (j + 1)
 		image += "\n" + ("-" * 30) + "\n"
 
-		for i in range(len(self.board)):
+		for i in xrange(len(self.board)):
 			image += str(i + 1) + "|"
-			for j in range(len(self.board[0])):
+			for j in xrange(len(self.board[0])):
 				piece = self.board[i][j]
 				if piece is None:
 					image += "%5s|" % ""

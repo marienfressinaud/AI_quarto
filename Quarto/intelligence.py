@@ -2,7 +2,7 @@
 
 from models import Piece
 from match import Match
-from util import maximizeProperty, eval_position, getWiningProperties
+from util import maximize_property, eval_position, get_wining_properties
 import ui
 
 import random
@@ -66,7 +66,7 @@ class Novice(Intelligence):
 	"""
 
 	def getNonWiningPieces(self, match, pieces):
-		winning_props = getWiningProperties(match.board.board)
+		winning_props = get_wining_properties(match.board.board)
 		list = []
 		for p in pieces:
 			if not p.color in winning_props \
@@ -98,19 +98,19 @@ class Novice(Intelligence):
 		if len(available_pos) >= 15:
 			return Random().putOnBoard(match, piece)
 
-		better_color = maximizeProperty(
+		better_color = maximize_property(
 			match.board.board,
 			{ "propriety": "color", "value": piece.color }
 		)
-		better_height = maximizeProperty(
+		better_height = maximize_property(
 			match.board.board,
 			{ "propriety": "height", "value": piece.height }
 		)
-		better_shape = maximizeProperty(
+		better_shape = maximize_property(
 			match.board.board,
 			{ "propriety": "shape", "value": piece.shape }
 		)
-		better_state = maximizeProperty(
+		better_state = maximize_property(
 			match.board.board,
 			{ "propriety": "state", "value": piece.state }
 		)
