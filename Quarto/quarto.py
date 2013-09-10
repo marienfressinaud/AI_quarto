@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from match import Match
-from intelligence import Human, Random, Novice, Minimax
+from sys import argv
 
+from match import Match
+from tournament import Tournament
+from intelligence import Human, Random, Novice, Minimax
 import ui
 
 def change_configuration():
@@ -33,22 +35,30 @@ def main():
 	It permits also to modify game configuration (mainly players attributes)
 	'''
 
+	hostname = None
+	if len(argv) == 2:
+		hostname = argv[1]
+
 	configuration = {
 		'name_player1': 'Player 1',
 		'name_player2': 'Player 2',
-		'intelligence_player1': Minimax(1),
-		'intelligence_player2': Minimax(2)
+		'intelligence_player1': Novice(),
+		'intelligence_player2': Minimax(1),
+		'hostname': hostname
 	}
 
 	choice = None
 
 	while choice != "q":
 		ui.showMenu()
-		choice = ui.askChoice(("p", "c", "q")).lower()
+		choice = ui.askChoice(("p", "c", "q", "t")).lower()
 
 		if choice == "p":
 			match = Match(configuration)
 			match.run()
+		elif choice == "t":
+			tournament = Tournament(configuration)
+			tournament.run()
 		elif choice == "c":
 			configuration = change_configuration()
 

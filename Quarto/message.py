@@ -3,6 +3,7 @@
 import socket
 
 class Message():
+    _file = None
 
     def __init__(self, msg):
         split_msg = msg.split(' ')
@@ -18,16 +19,20 @@ class Message():
     def __str__(self):
         return ' '.join([self.type] + self.argv)
 
-    def read_msg(cls, sock):
-        if sock is None:
-            return Message("Invalid\n")
+    def read_msg(cls):
+        if Message._file is None:
+            return Message("Invalid invalid\n")
 
-        msg = sock.recv(1024)
+        msg = Message._file.readline()
         return Message(msg)
 
-    def send_move(cls, sock, pos, piece):
-        msg = "Move %d %d %s" % (pos['x'], pos['y'], piece)
-        sock.sendall(msg)
+    def send_move(cls, pos, piece):
+        if Message._file is None:
+            return None
+
+        msg = "Move %d %d %s\n" % (pos['x'], pos['y'], piece)
+        Message._file.write(msg)
+        Message._file.flush()
 
     read_msg = classmethod(read_msg)
     send_move = classmethod(send_move)

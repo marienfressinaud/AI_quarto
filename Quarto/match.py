@@ -4,7 +4,7 @@ from models import Piece, Board, Player
 
 import ui
 
-class Match:
+class Match(object):
 	'''
 	A match represents a 2-players competition
 	'''

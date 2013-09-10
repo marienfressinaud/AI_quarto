@@ -221,3 +221,22 @@ def eval_position(direction, board, pos):
 		eval_pos += 1
 
 	return eval_pos
+
+def str_from_server(str):
+    trad = ""
+
+    if str[0] == "B":
+        trad = "b"
+    else:
+        trad = "r"
+
+    if str[1] == "L":
+        trad = trad.upper()
+
+    if str[3] == "H":
+        trad = trad + "*"
+
+    if str[2] == "C":
+        trad = "(" + trad + ")"
+
+    return trad

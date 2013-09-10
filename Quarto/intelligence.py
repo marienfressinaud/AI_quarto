@@ -39,6 +39,15 @@ class Random(Intelligence):
 
 	def selectPiece(self, match):
 		available_pieces = match.board.unusedPieces()
+		if len(available_pieces) < 1:
+			# trick for tournament, when board is full
+			return Piece({
+				"color": "blue",
+				"height": "small",
+				"shape": "round",
+				"state": "solid"
+			})
+
 		i = random.randint(0, len(available_pieces) - 1)
 
 		ui.showPlayer(match.active_player)
@@ -78,6 +87,15 @@ class Novice(Intelligence):
 
 	def selectPiece(self, match):
 		unused_pieces = match.board.unusedPieces()
+		if len(unused_pieces) < 1:
+			# trick for tournament, when board is full
+			return Piece({
+				"color": "blue",
+				"height": "small",
+				"shape": "round",
+				"state": "solid"
+			})
+
 		available_pieces = self.getNonWiningPieces(match, unused_pieces)
 		if len(available_pieces) < 1:
 			available_pieces = unused_pieces
@@ -234,6 +252,15 @@ class Minimax(Intelligence):
 
 	def selectPiece(self, match):
 		available_pieces = match.board.unusedPieces()
+		if len(available_pieces) < 1:
+			# trick for tournament, when board is full
+			return Piece({
+				"color": "blue",
+				"height": "small",
+				"shape": "round",
+				"state": "solid"
+			})
+
 		available_pos = match.board.unusedPositions()
 		fallback_i = random.randint(0, len(available_pieces) - 1)
 		chosen_piece = available_pieces[fallback_i]

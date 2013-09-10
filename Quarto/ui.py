@@ -8,6 +8,7 @@ def showMenu():
 	print """
 	======= MENU =======
 	= (P)lay           =
+	= (T)ournament     =
 	= (C)onfiguration  =
 	= (Q)uit           =
 	"""
