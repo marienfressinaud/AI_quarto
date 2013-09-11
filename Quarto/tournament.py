@@ -36,6 +36,7 @@ class Tournament(Match):
             self.intelligence = configuration["intelligence_player1"]
         else:
             self.intelligence = configuration["intelligence_player2"]
+            self.nextPlayer()
 
     def run(self):
         message = Message.read_msg()

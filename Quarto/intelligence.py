@@ -161,7 +161,7 @@ class Minimax(Intelligence):
 	with alpha-beta pruning. It must be the better player!
 	"""
 
-	STILL_NOVICE_UNTIL = 13
+	STILL_NOVICE_UNTIL = 12
 
 	MAX_VAL_DEPTH = 5
 
@@ -221,7 +221,7 @@ class Minimax(Intelligence):
 
 					if eval >= beta:
 						board.takeOff(played_piece)
-						return eval
+						return -1 * eval
 
 					alpha = max(alpha, eval)
 			eval = alpha
@@ -244,9 +244,8 @@ class Minimax(Intelligence):
 			eval = beta
 
 		board.takeOff(played_piece)
-
 		if state == Minimax.STATE_MAX:
-			eval = Minimax.EVAL_WIN - eval
+			eval *= -1
 
 		return eval
 

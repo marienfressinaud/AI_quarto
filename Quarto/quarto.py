@@ -42,8 +42,8 @@ def main():
 	configuration = {
 		'name_player1': 'Player 1',
 		'name_player2': 'Player 2',
-		'intelligence_player1': Novice(),
-		'intelligence_player2': Minimax(1),
+		'intelligence_player1': Minimax(1),
+		'intelligence_player2': Minimax(3),
 		'hostname': hostname
 	}
 
