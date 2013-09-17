@@ -27,6 +27,10 @@ def change_configuration():
 		configuration["name_player" + str(i + 1)] = player_conf["name"]
 		configuration["intelligence_player" + str(i + 1)] = intelligence
 
+	configuration["hostname"] = None
+	if len(argv) == 2:
+		configuration["hostname"] = argv[1]
+
 	return configuration
 
 def main():
@@ -40,10 +44,10 @@ def main():
 		hostname = argv[1]
 
 	configuration = {
-		'name_player1': 'Player 1',
-		'name_player2': 'Player 2',
-		'intelligence_player1': Minimax(1),
-		'intelligence_player2': Minimax(3),
+		'name_player1': 'Looser',
+		'name_player2': 'Winner',
+		'intelligence_player1': Minimax(3),
+		'intelligence_player2': Minimax(4),
 		'hostname': hostname
 	}
 
@@ -51,7 +55,10 @@ def main():
 
 	while choice != "q":
 		ui.showMenu()
-		choice = ui.askChoice(("p", "c", "q", "t")).lower()
+		try:
+			choice = ui.askChoice(("p", "t", "c", "q")).lower()
+		except EOFError:
+			choice = "q"
 
 		if choice == "p":
 			match = Match(configuration)

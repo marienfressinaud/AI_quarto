@@ -22,33 +22,37 @@ def main():
 
 	pieces = match.board.unusedPieces()
 	pos = {"x": 0, "y": 0}
-	match.board.putPiece(pieces[6], pos)
-	pos = {"x": 0, "y": 1}
-	match.board.putPiece(pieces[1], pos)
-	pos = {"x": 0, "y": 2}
-	match.board.putPiece(pieces[8], pos)
-	pos = {"x": 0, "y": 3}
-	match.board.putPiece(pieces[10], pos)
-	pos = {"x": 1, "y": 0}
-	match.board.putPiece(pieces[13], pos)
-	pos = {"x": 1, "y": 3}
-	match.board.putPiece(pieces[7], pos)
-	pos = {"x": 2, "y": 2}
-	match.board.putPiece(pieces[2], pos)
-	pos = {"x": 3, "y": 2}
 	match.board.putPiece(pieces[0], pos)
-	pos = {"x": 1, "y": 2}
-	match.board.putPiece(pieces[15], pos)
+	pos = {"x": 0, "y": 3}
+	match.board.putPiece(pieces[1], pos)
+	pos = {"x": 0, "y": 1}
+	match.board.putPiece(pieces[2], pos)
+	# pos = {"x": 0, "y": 0}
+	# match.board.putPiece(pieces[6], pos)
+	# pos = {"x": 0, "y": 1}
+	# match.board.putPiece(pieces[1], pos)
+	# pos = {"x": 0, "y": 2}
+	# match.board.putPiece(pieces[8], pos)
+	# pos = {"x": 0, "y": 3}
+	# match.board.putPiece(pieces[10], pos)
+	# pos = {"x": 1, "y": 0}
+	# match.board.putPiece(pieces[13], pos)
+	# pos = {"x": 1, "y": 3}
+	# match.board.putPiece(pieces[7], pos)
+	# pos = {"x": 2, "y": 2}
+	# match.board.putPiece(pieces[2], pos)
+	# pos = {"x": 3, "y": 2}
+	# match.board.putPiece(pieces[0], pos)
+	# pos = {"x": 1, "y": 2}
+	# match.board.putPiece(pieces[15], pos)
 
 	ui.showBoard(match.board)
-	ui.showChoosePiece(match.board.unusedPieces())
+	# ui.showChoosePiece(match.board.unusedPieces())
 
-	# print pieces[15]
-	# Minimax(1).putOnBoard(match, pieces[15])
+	# print pieces[1]
+	# Minimax(1).putOnBoard(match, pieces[1])
 
-	Minimax(1).selectPiece(match)
-
-	print Minimax(1).evaluation(match.board, pos)
+	print Minimax(1).evaluation(match.board, pos, Minimax.STATE_MIN)
 
 if __name__ == "__main__":
 	main()

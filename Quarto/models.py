@@ -196,7 +196,7 @@ class Board:
 		image = "  "
 		for j in xrange(len(self.board[0])):
 			image += "%3d   " % (j + 1)
-		image += "\n" + ("-" * 30) + "\n"
+		image += "\n" + ("-" * 26) + "\n"
 
 		for i in xrange(len(self.board)):
 			image += str(i + 1) + "|"

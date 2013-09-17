@@ -6,15 +6,11 @@ class Message():
     _file = None
 
     def __init__(self, msg):
+        msg = msg[:-1]
+
         split_msg = msg.split(' ')
         self.type = split_msg[0]
         self.argv = split_msg[1:]
-
-        # skip the last \n
-        if len(self.argv) > 0:
-            self.argv[-1] = self.argv[-1][:-1]
-        else:
-            self.type = self.type[:-1]
 
     def __str__(self):
         return ' '.join([self.type] + self.argv)

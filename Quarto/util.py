@@ -100,8 +100,11 @@ def get_board_values(board):
 	return values
 
 
-def maximize_property(board, prop):
-	board_values = get_board_values(board)
+def maximize_property(board, prop, values = None):
+	if values is None:
+		board_values = get_board_values(board)
+	else:
+		board_values = values
 
 	prop_name = prop["propriety"]
 	prop_val = prop["value"]
@@ -164,61 +167,51 @@ def get_wining_properties(board):
 
 	return props
 
-def eval_position(direction, board, pos):
-	piece = board[pos["x"]][pos["y"]]
-	prop = {
-		piece.color: 0,
-		piece.height: 0,
-		piece.shape: 0,
-		piece.state: 0
-	}
-	nb_pieces = 0
+def eval_position(board, pos):
 	eval_pos = 0
 
+	piece = board[pos["x"]][pos["y"]]
+	board_values = get_board_values(board)
+	better_color = maximize_property(
+		board,
+		{ "propriety": "color", "value": piece.color },
+		board_values
+	)
+	better_height = maximize_property(
+		board,
+		{ "propriety": "height", "value": piece.height },
+		board_values
+	)
+	better_shape = maximize_property(
+		board,
+		{ "propriety": "shape", "value": piece.shape },
+		board_values
+	)
+	better_state = maximize_property(
+		board,
+		{ "propriety": "state", "value": piece.state },
+		board_values
+	)
+
+	if better_color["position"] == pos:
+		eval_pos += 1
+	if better_height["position"] == pos:
+		eval_pos += 1
+	if better_shape["position"] == pos:
+		eval_pos += 1
+	if better_state["position"] == pos:
+		eval_pos += 1
+
 	winning_props = get_wining_properties(board)
+	eval_pos += len(winning_props)
+
 	if ("red" in winning_props and "blue" in winning_props) or \
 			("short" in winning_props and "tall" in winning_props) or \
 			("round" in winning_props and "square" in winning_props) or \
 			("solid" in winning_props and "hollow" in winning_props):
 		# two different winning values for a same property,
-		# it's like this board has been already won, but not sure
-		return 0
-
-	for i in xrange(len(board)):
-		x, y = 0, 0
-
-		if direction == "row":
-			x, y = pos["x"], i
-		elif direction == "col":
-			x, y = i, pos["y"]
-		elif direction == "diag-down":
-			x, y = i, i
-		elif direction == "diag-up":
-			x, y = i, 3 - i
-
-		cur_piece = board[x][y]
-		if cur_piece is not None:
-				prop[piece.color] += cur_piece.color_int()
-				prop[piece.height] += cur_piece.height_int()
-				prop[piece.shape] += cur_piece.shape_int()
-				prop[piece.state] += cur_piece.state_int()
-				nb_pieces += 1
-
-	prop[piece.color] *= prop[piece.color]
-	prop[piece.height] *= prop[piece.height]
-	prop[piece.shape] *= prop[piece.shape]
-	prop[piece.state] *= prop[piece.state]
-
-	nb_pieces *= nb_pieces
-
-	if prop[piece.color] == nb_pieces:
-		eval_pos += 1
-	if prop[piece.height] == nb_pieces:
-		eval_pos += 1
-	if prop[piece.shape] == nb_pieces:
-		eval_pos += 1
-	if prop[piece.state] == nb_pieces:
-		eval_pos += 1
+		# it's like this board will be won on the next turn
+		eval_pos = 0
 
 	return eval_pos
 

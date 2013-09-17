@@ -44,8 +44,8 @@ def askConfPlayer(num):
 	conf_player["intelligence"] = askChoice(("h", "r", "n", "m")).lower()
 
 	if conf_player["intelligence"] == "m":
-		print "Which level? (from 1 to 5)"
-		conf_player["depth"] = int(askChoice(("1", "2", "3", "4", "5")))
+		print "Which level? (from 1 to 4)"
+		conf_player["depth"] = int(askChoice(("1", "2", "3", "4")))
 
 	print
 
