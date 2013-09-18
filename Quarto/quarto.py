@@ -44,10 +44,10 @@ def main():
 		hostname = argv[1]
 
 	configuration = {
-		'name_player1': 'Looser',
-		'name_player2': 'Winner',
-		'intelligence_player1': Minimax(3),
-		'intelligence_player2': Minimax(4),
+		'name_player1': 'Mr. R',
+		'name_player2': 'Mr. N',
+		'intelligence_player1': Random(),
+		'intelligence_player2': Novice(),
 		'hostname': hostname
 	}
 

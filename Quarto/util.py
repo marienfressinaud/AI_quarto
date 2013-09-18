@@ -171,6 +171,8 @@ def eval_position(board, pos):
 	eval_pos = 0
 
 	piece = board[pos["x"]][pos["y"]]
+	board[pos["x"]][pos["y"]] = None
+
 	board_values = get_board_values(board)
 	better_color = maximize_property(
 		board,
@@ -201,6 +203,8 @@ def eval_position(board, pos):
 		eval_pos += 1
 	if better_state["position"] == pos:
 		eval_pos += 1
+
+	board[pos["x"]][pos["y"]] = piece
 
 	winning_props = get_wining_properties(board)
 	eval_pos += len(winning_props)
