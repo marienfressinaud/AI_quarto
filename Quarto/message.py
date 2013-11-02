@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import socket
 
 class Message():
     _file = None

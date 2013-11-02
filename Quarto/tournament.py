@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import random
-import socket   
+import socket
 
 from match import Match
 from message import Message
 from models import Board
 from util import str_from_server
 import ui
+
 
 class Tournament(Match):
 
@@ -23,11 +24,11 @@ class Tournament(Match):
             s = socket.socket()
             s.connect((hostname, 4455))
         except socket.error, err:
-            print "%s" % err
+            raise Exception("%s" % err)
 
         Message._file = s.makefile("r+")
 
-        Message.read_msg() # skip "Do you want to play a game?"
+        Message.read_msg()  # skip "Do you want to play a game?"
 
         message = Message.read_msg()
         self.player_num = message.argv[0]
